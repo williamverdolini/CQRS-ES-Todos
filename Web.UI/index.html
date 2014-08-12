@@ -111,7 +111,7 @@
         <div class="header">
             <ul class="nav nav-pills pull-right">
                 <li class="active"><a href="#">Home</a></li>
-                <li><a href="http://williamverdolini.github.io/CQRS-ES-ToDo-List.html" target="_blank">About</a></li>
+                <li><a href="http://williamverdolini.github.io/Cqrs-es-todos.html" target="_blank">About</a></li>
                 <li><a href="http://it.linkedin.com/in/williamverdolini/" target="_blank">Contact</a></li>
             </ul>
             <h3 class="text-muted">CQRS+ES To-Do List</h3>
@@ -133,16 +133,15 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr data-ng-repeat="lista in local.todoList">
+                    <tr data-ng-repeat="list in local.todoList">
                         <td>{{$index+1}}</td>
-                        <td>{{lista.Title}}</td>
-                        <!--<td>{{list.Description}}</td>-->
+                        <td>{{list.Title}}</td>
                         <td>
-                            <input class="form-control input-sm" type="text" ng-minlength="1" name="description" ng-model="lista.Description" ng-model-onblur ng-change="actions.changeDescription(lista)">
+                            <input class="form-control input-sm" type="text" ng-minlength="1" name="description" ng-model="list.Description" ng-model-onblur ng-change="actions.changeDescription(list)">
                         </td>
                         <td>
                             <!--<button type="button" class="btn btn-default btn-sm" ng-click="actions.changeDescription($index)" tooltip="{{local.labels.changeDescription}}"><span class="glyphicon glyphicon-pencil"></span></button>-->
-                            <button type="button" class="btn btn-default btn-sm" ng-click="actions.viewItems(lista)" tooltip="{{local.labels.todoItems}}"><span class="glyphicon glyphicon-eye-open"></span></button>
+                            <button type="button" class="btn btn-default btn-sm" ng-click="actions.viewItems(list)" tooltip="{{local.labels.todoItems}}"><span class="glyphicon glyphicon-eye-open"></span></button>
                         </td>
                     </tr>
                 </tbody>
@@ -164,14 +163,6 @@
                                 <input class="form-control input-sm" type="text" ng-minlength="7" name="description" ng-model="local.list.description" required>
                             </div>
                         </div>
-                        <!--
-                    <div class="form-group col-xs-2">
-                        <label class="control-label">Importance</label>
-                        <div>
-                            <input class="form-control input-sm" type="text" name="importance" ng-model="local.importance" required>
-                        </div>
-                    </div>
-                    -->
                         <div class="form-group">
                             <label class="control-label"></label>
                             <div class="control-group pull-right">
@@ -198,7 +189,7 @@
                 {{local.item.listDescription}}
             </h4>
 
-            <h4 ng-show="local.todoItems.length>0"><span class="label label-danger">Task Aperti</span></h4>
+            <h4 ng-show="local.todoItems.length>0"><span class="label label-danger">Open Tasks</span></h4>
             <table id="TodoListTable" class="table table-striped" ng-show="local.todoItems.length>0">
                 <thead>
                     <tr>
@@ -218,7 +209,6 @@
                         <td>
                             <input class="form-control input-sm" type="number" ng-model="todo.Importance" ng-model-onblur ng-change="actions.changeImportance(todo)" ng-disabled="todo.Status == 'Closed'">
                         </td>
-                        <!--<td>{{todo.DueDate | date:'dd/MM/yyyy'}}</td>-->
                         <td>
                             <p class="input-group">
                                 <input type="text" class="form-control input-sm" datepicker-popup="dd/MM/yyyy" datepicker-options="{{local.item.dateOptions}}" is-open="todo.opened" max-date="'2015-06-22'" ng-model="todo.formatDueDate" ng-required="true" close-text="Close" ng-disabled="todo.Status == 'Closed'" ng-model-onblur ng-change="actions.changeDueDate(todo)" />
@@ -240,7 +230,7 @@
                 </tbody>
             </table>
 
-            <h4 ng-show="local.todoItems.length>0"><span class="label label-success">Task Completati</span></h4>
+            <h4 ng-show="local.todoItems.length>0"><span class="label label-success">Completed Tasks</span></h4>
             <table id="TodoListTable" class="table table-striped" ng-show="local.todoItems.length>0">
                 <thead>
                     <tr>

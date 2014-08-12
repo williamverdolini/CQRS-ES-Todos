@@ -57,8 +57,7 @@ angular.module('TodoApp')
             when('/items/:Id', { controller: 'TodoListItemsController', templateUrl: 'todoItems.html' }).
             otherwise({ redirectTo: "/" });
     })
-    .controller('TodoListController', ['$scope', '$http', '$location', 'w$settings', 'w$utils', '$sce',
-        function ($scope, $http, $location, w$settings, w$utils, $sce) {
+    .controller('TodoListController', ['$scope', '$http', '$location', 'w$settings', 'w$utils', '$sce', function ($scope, $http, $location, w$settings, w$utils, $sce) {
         $scope.local = {
             TodoListForm: null,
             TodoItemForm: null,
@@ -192,12 +191,6 @@ angular.module('TodoApp')
                     .error(
                         function (data, status, headers, config) {
                             $scope.local.item.errors.message = w$utils.getFluentValidationMessage(data.Message);
-                            //var errorString = new String(data.Message).replace('Validation failed: \r\n', '');
-                            //var errors = errorString.split(' -- ');
-                            //$scope.local.item.errors.message = '<ul>'
-                            //angular.forEach(errors, function (value) { if (value.length) $scope.local.item.errors.message += '<li>' + value + '</li>' })
-                            //$scope.local.item.errors.message += '</ul>'
-                            ////$scope.local.item.errors.message = new String(data.Message).replace('Validation failed:','').replace('--','<li>';
                             $scope.local.item.errors.show = true;
                         })
             },
@@ -214,7 +207,6 @@ angular.module('TodoApp')
                         });
             },
             reOpen: function (_item) {
-                //var _item = $scope.local.todoItems[index];
                 var _input = {
                     id: _item.Id
                 }
