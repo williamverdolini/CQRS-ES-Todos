@@ -1,10 +1,11 @@
 ﻿using CommonDomain.Persistence;
 using FluentValidation;
-using FluentValidation.Results;
+using FluentValidation.Resources;
 using System;
 using System.Linq;
 using Todo.Domain.Messages.Commands;
 using Todo.Domain.Model;
+using Todo.Infrastructure;
 using Todo.QueryStack;
 
 namespace Todo.CommandStack.Logic.Validators
@@ -15,7 +16,9 @@ namespace Todo.CommandStack.Logic.Validators
 
         public CreateToDoListCommandValidator(IDatabase db)
         {
+            Contract.Requires<ArgumentNullException>(db != null, "db");
             database = db;
+
             RuleFor(command => command.Id).NotEmpty();
             RuleFor(command => command.Title).NotEmpty();
             RuleFor(command => command.Title).Must(BeUniqueTitle).WithMessage("List's Title is already used. Please choose another.");
@@ -29,11 +32,8 @@ namespace Todo.CommandStack.Logic.Validators
 
     public class AddNewToDoItemCommandValidator : AbstractValidator<AddNewToDoItemCommand>
     {
-        private readonly IDatabase database;
-
-        public AddNewToDoItemCommandValidator(IDatabase db)
+        public AddNewToDoItemCommandValidator()
         {
-            database = db;
             RuleFor(command => command.Id).NotEmpty();
             RuleFor(command => command.Description).NotEmpty();
             // If DueDate is not null, it should be >= CreationDate
@@ -48,14 +48,26 @@ namespace Todo.CommandStack.Logic.Validators
 
         public MarkToDoItemAsCompletedCommandValidator(IRepository repo)
         {
+            Contract.Requires<ArgumentNullException>(repo != null, "repo");
             repository = repo;
-            Custom(command =>
-            {
-                ToDoItem item = repository.GetById<ToDoItem>(command.Id);
-                return command.ClosingDate < item.CreationDate ?
-                    new ValidationFailure("ClosingDate","'ClosingDate' deve essere minore della data di creazione") :
-                    null;
-            });
+
+            RuleFor(command => command.ClosingDate).Must(GreaterThanOrEqualToCreation)
+                .WithMessage(Messages.greaterthanorequal_error, "ClosingDate", "CreationDate");
+
+            //// Alternative way to implement same custom validation rule (more flexible, but for most of the cases "Must" is ok)
+            //Custom(command =>
+            //{
+            //    ToDoItem item = repository.GetById<ToDoItem>(command.Id);
+            //    return command.ClosingDate < item.CreationDate ?
+            //        new ValidationFailure("ClosingDate","'ClosingDate' deve essere minore della data di creazione") :
+            //        null;
+            //});
+        }
+
+        private bool GreaterThanOrEqualToCreation(MarkToDoItemAsCompleteCommand command, DateTime closingDate)
+        {
+            ToDoItem item = repository.GetById<ToDoItem>(command.Id);
+            return closingDate >= item.CreationDate;
         }
     }
 
