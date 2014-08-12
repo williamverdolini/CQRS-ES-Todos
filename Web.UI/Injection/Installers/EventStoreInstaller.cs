@@ -33,11 +33,6 @@ namespace Web.UI.Injection.Installers
             }
             return constructor.Invoke(new object[] { id }) as IAggregate;
         }
-
-        //public IAggregate Build(Type type, Guid id, IMemento snapshot)
-        //{
-        //    return Activator.CreateInstance(type, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, new object[] { id, snapshot }, null) as IAggregate;
-        //}
     }
 
     public class EventStoreInstaller : IWindsorInstaller
@@ -50,7 +45,6 @@ namespace Web.UI.Injection.Installers
 
         public void Install(IWindsorContainer container, IConfigurationStore store)
         {
-            //container.Register(Component.For<IDispatchCommits>().ImplementedBy<InMemoryBus>().LifestyleSingleton());
             container.Register(Component.For<IBus, IDispatchCommits>().ImplementedBy<InMemoryBus>().LifestyleSingleton());
 
             _store =

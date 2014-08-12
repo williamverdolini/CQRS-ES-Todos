@@ -19,8 +19,6 @@ namespace Web.UI.Injection.Installers
             container.Register(
                 Classes
                 .FromAssemblyContaining<ToDoCommandHandlers>()
-                //.FromAssemblyContaining(typeof(ToDoCommandHandlers))
-                //.FromThisAssembly()
                 .BasedOn(typeof(ICommandHandler<>)) // That implement ICommandHandler Interface
                 .WithService.Base()    // and its name contain "CommandHandler"
                 .LifestyleSingleton()
@@ -37,7 +35,6 @@ namespace Web.UI.Injection.Installers
             container.Register(
                 Classes
                 .FromAssemblyContaining<ToDoEventHandlers>()
-                //.FromThisAssembly()
                 .BasedOn(typeof(IEventHandler<>)) // That implement ICommandHandler Interface
                 .WithService.Base()    // and its name contain "CommandHandler"
                 .LifestyleSingleton()
@@ -51,7 +48,6 @@ namespace Web.UI.Injection.Installers
 
             // DI Registration for IDatabase (QueryStack)
             container.Register(Component.For<IDatabase>().ImplementedBy<Database>().LifestyleTransient());
-            //container.Register(Component.For<IBus>().ImplementedBy<InMemoryBus>().LifestyleSingleton());
         }
     }
 

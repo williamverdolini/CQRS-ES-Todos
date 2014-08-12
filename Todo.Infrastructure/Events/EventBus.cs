@@ -12,7 +12,6 @@ namespace Todo.Infrastructure.Events
     {
         private readonly IEventHandlerFactory _factory;
         private IList<Type> _registeredEvent;
-        //private static IList<Type> registeredHandlers = new List<Type>();
 
         public EventBus(IEventHandlerFactory factory)
         {
@@ -34,7 +33,8 @@ namespace Todo.Infrastructure.Events
 
         public void Subscribe<TEvent>()
         {
-            _registeredEvent.Add(typeof(TEvent));
+            throw new NotImplementedException();
+            //_registeredEvent.Add(typeof(TEvent));
         }
 
         public void Unsubscribe<TEvent>()

@@ -98,29 +98,5 @@ namespace Todo.Domain.Model
             DueDate = @event.DueDate;
         }
         #endregion
-
-        /*
-        public void Assign(Guid id, Guid userId)
-        {
-            RaiseEvent(new AssignedToDoItemEvent(id, userId));
-        }
-
-        void Apply(AssignedToDoItemEvent @event)
-        {
-            UserId = @event.UserId;
-        }
-
-        public void Review(Guid id, string description, DateTime dueDate, int importance)
-        {
-            RaiseEvent(new ReviewedToDoItemEvent(id, description, dueDate, importance));
-        }
-
-        public void Apply(ReviewedToDoItemEvent @event)
-        {
-            Description = @event.Description;
-            DueDate = @event.DueDate;
-            Importance = @event.Importance;
-        }
-        */
     }
 }

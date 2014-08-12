@@ -103,31 +103,4 @@ namespace Todo.Domain.Messages.Events
             DueDate = dueDate;
         }
     }
-
-    /*
-    public class ReviewedToDoItemEvent : Event
-    {
-        public string Description { get; private set; }
-        public DateTime DueDate { get; private set; }
-        public int Importance { get; private set; }
-
-        public ReviewedToDoItemEvent(Guid id, string description, DateTime dueDate, int importance)
-        {
-            Id = id;
-            DueDate = dueDate;
-            Importance = importance;
-        }
-    }
-
-    public class AssignedToDoItemEvent : Event
-    {
-        public Guid UserId { get; private set; }
-
-        public AssignedToDoItemEvent(Guid id, Guid userId)
-        {
-            Id = id;
-            UserId = userId;
-        }
-    }
-    */
 }

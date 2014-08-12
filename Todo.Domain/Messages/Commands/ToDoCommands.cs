@@ -1,5 +1,5 @@
-﻿using Todo.Infrastructure.Commands;
-using System;
+﻿using System;
+using Todo.Infrastructure.Commands;
 
 namespace Todo.Domain.Messages.Commands
 {
@@ -23,7 +23,6 @@ namespace Todo.Domain.Messages.Commands
             Title = title;
             Description = description;
         }
-
     }
 
     public class ChangeToDoListDescriptionCommand : Command
@@ -36,7 +35,6 @@ namespace Todo.Domain.Messages.Commands
             Id = new Guid(id);
             Description = description;
         }
-
     }
 
     // ToDoItem Commands
@@ -111,29 +109,4 @@ namespace Todo.Domain.Messages.Commands
             DueDate = dueDate;
         }
     }
-    /*
-    public class ReviewToDoItemCommand : Command
-    {
-        public string Description { get; private set; }
-        public DateTime DueDate { get; private set; }
-        public int Importance { get; private set; }
-
-        public ReviewToDoItemCommand(Guid id,string description, DateTime dueDate, int importance)
-        {
-            Id = id;
-            DueDate = dueDate;
-            Importance = importance;
-        }
-    }
-
-    public class AssignToDoItemCommand : Command
-    {
-        public Guid UserId { get; private set; }
-
-        public AssignToDoItemCommand(Guid userId)
-        {
-            UserId = userId;
-        }
-    }
-    */
 }

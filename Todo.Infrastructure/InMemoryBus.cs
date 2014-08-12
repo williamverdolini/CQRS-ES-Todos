@@ -55,12 +55,14 @@ namespace Todo.Infrastructure
         #region Event Bus
         public void Subscribe<TEvent>()
         {
-            _registeredEventHandlers.Add(typeof(TEvent));
+            throw new NotImplementedException();
+            //_registeredEventHandlers.Add(typeof(TEvent));
         }
 
         public void Unsubscribe<TEvent>()
         {
-            _registeredEventHandlers.Remove(typeof(TEvent));
+            throw new NotImplementedException();
+            //_registeredEventHandlers.Remove(typeof(TEvent));
         }
 
         public void Publish<TEvent>(TEvent message)
@@ -82,7 +84,6 @@ namespace Todo.Infrastructure
             foreach (var @event in commit.Events)
             {
                 //Run-time conversion for typed event
-                //dynamic e = Convert.ChangeType(@event.Body, @event.Body.GetType());
                 Publish((dynamic)@event.Body);
             }
         }

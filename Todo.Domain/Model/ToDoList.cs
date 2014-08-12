@@ -11,6 +11,7 @@ namespace Todo.Domain.Model
         public string Description { get; private set; }
         public IList<ToDoItem> Items { get; private set; }
 
+        //constructor with only id parameter for EventStore
         private ToDoList(Guid toDoListId)
         {
             Id = toDoListId;
@@ -24,10 +25,7 @@ namespace Todo.Domain.Model
             CreateToDoList(toDoListId, title, description);
         }
 
-        //static public ToDoList Crea(Guid toDoListId, string title, string description, IServiceCheckUniqueToDoList){
-
-        //}
-
+        #region Create New ToDoList
         private void CreateToDoList(Guid toDoListId, string title, string description)
         {
             RaiseEvent(new CreatedToDoListEvent(toDoListId, title, description));
@@ -39,7 +37,9 @@ namespace Todo.Domain.Model
             Title = @event.Title;
             Description = @event.Description;
         }
+        #endregion
 
+        #region Change ToDoList Description
         public void ChangeDescription(string description)
         {
             RaiseEvent(new ChangedToDoListDescriptionEvent(this.Id, description));
@@ -49,6 +49,6 @@ namespace Todo.Domain.Model
         {
             Description = @event.Description;
         }
-
+        #endregion
     }
 }

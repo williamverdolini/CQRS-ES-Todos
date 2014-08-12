@@ -23,6 +23,7 @@ namespace Web.UI.Controllers
         ///////////////////////
         /// TODO -LISTS
         ///////////////////////
+        #region TodoList Actions
         [Route("api/TodoList/List")]
         [HttpGet]
         public Task<List<ToDoList>> List()
@@ -66,19 +67,21 @@ namespace Web.UI.Controllers
             }
         }
 
-        // PUT api/todolist/5
-        public void Put(int id, [FromBody]string value)
-        {
-        }
+        //// PUT api/todolist/5
+        //public void Put(int id, [FromBody]string value)
+        //{
+        //}
 
-        // DELETE api/todolist/5
-        public void Delete(int id)
-        {
-        }
+        //// DELETE api/todolist/5
+        //public void Delete(int id)
+        //{
+        //}
+        #endregion
 
         ///////////////////////
         /// TODO -ITEMS
         ///////////////////////
+        #region ToDoItems Actions
         [Route("api/TodoList/Items/{Id}")]
         [HttpGet]
         public Task<ToDoList> Items(string Id)
@@ -194,6 +197,6 @@ namespace Web.UI.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        
+        #endregion
     }
 }
