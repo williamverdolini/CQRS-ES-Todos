@@ -1,0 +1,328 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>CQRS+ES To-Do List</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="Content/bootstrap.min.css" media="screen">
+    <script type="text/javascript" src="Scripts/angular.js"></script>
+    <script type="text/javascript" src="Scripts/angular-route.js"></script>
+    <script type="text/javascript" src="Scripts/angular-resource.js"></script>
+    <script type="text/javascript" src="Scripts/angular-sanitize.js"></script>
+    <script type="text/javascript" src="Scripts/angular-ui/ui-bootstrap-tpls.js"></script>
+    <script type="text/javascript" src="Scripts/app/application.js"></script>
+    <style>
+        /* Space out content a bit */
+        body {
+            padding-top: 20px;
+            padding-bottom: 20px;
+        }
+
+        /* Everything but the jumbotron gets side spacing for mobile first views */
+        .header,
+        .marketing,
+        .footer {
+            padding-right: 15px;
+            padding-left: 15px;
+        }
+
+        /* Custom page header */
+        .header {
+            border-bottom: 1px solid #e5e5e5;
+        }
+            /* Make the masthead heading the same height as the navigation */
+            .header h3 {
+                padding-bottom: 19px;
+                margin-top: 0;
+                margin-bottom: 0;
+                line-height: 40px;
+            }
+
+        /* Custom page footer */
+        .footer {
+            padding-top: 19px;
+            color: #777;
+            border-top: 1px solid #e5e5e5;
+        }
+
+        /* Customize container */
+        /*@media (min-width: 768px) {
+            .container {
+                max-width: 730px;
+            }
+        }*/
+
+        @media (min-width: 1200px) {
+            .container {
+                max-width: 1000px;
+            }
+        }
+
+        .container-narrow > hr {
+            margin: 30px 0;
+        }
+
+        /* Main marketing message and sign up button */
+        .jumbotron {
+            text-align: center;
+            border-bottom: 1px solid #e5e5e5;
+        }
+
+            .jumbotron .btn {
+                padding: 14px 24px;
+                font-size: 21px;
+            }
+
+        /* Supporting marketing content */
+        .marketing {
+            margin: 40px 0;
+        }
+
+            .marketing p + h4 {
+                margin-top: 28px;
+            }
+
+        /* Responsive: Portrait tablets and up */
+        @media screen and (min-width: 768px) {
+            /* Remove the padding we set earlier */
+            .header,
+            .marketing,
+            .footer {
+                padding-right: 0;
+                padding-left: 0;
+            }
+            /* Space out the masthead */
+            .header {
+                margin-bottom: 30px;
+            }
+            /* Remove the bottom border on the jumbotron for visual effect */
+            .jumbotron {
+                border-bottom: 0;
+            }
+        }
+
+        .strike {
+          text-decoration: line-through;
+        }
+
+    </style>
+</head>
+<body ng-app="TodoApp">
+    <div class="container">
+        <div class="header">
+            <ul class="nav nav-pills pull-right">
+                <li class="active"><a href="#">Home</a></li>
+                <li><a href="http://williamverdolini.github.io/CQRS-ES-ToDo-List.html" target="_blank">About</a></li>
+                <li><a href="http://it.linkedin.com/in/williamverdolini/" target="_blank">Contact</a></li>
+            </ul>
+            <h3 class="text-muted">CQRS+ES To-Do List</h3>
+        </div>
+
+        <div class="row marketing">
+            <div ng-view></div>
+        </div>
+
+        <script type="text/ng-template" id="todoList.html">
+
+            <table id="TodoListTable" class="table table-striped" ng-show="local.todoList.length>0">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Title</th>
+                        <th style="width:65%">Description</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr data-ng-repeat="lista in local.todoList">
+                        <td>{{$index+1}}</td>
+                        <td>{{lista.Title}}</td>
+                        <!--<td>{{list.Description}}</td>-->
+                        <td>
+                            <input class="form-control input-sm" type="text" ng-minlength="1" name="description" ng-model="lista.Description" ng-model-onblur ng-change="actions.changeDescription(lista)">
+                        </td>
+                        <td>
+                            <!--<button type="button" class="btn btn-default btn-sm" ng-click="actions.changeDescription($index)" tooltip="{{local.labels.changeDescription}}"><span class="glyphicon glyphicon-pencil"></span></button>-->
+                            <button type="button" class="btn btn-default btn-sm" ng-click="actions.viewItems(lista)" tooltip="{{local.labels.todoItems}}"><span class="glyphicon glyphicon-eye-open"></span></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="panel panel-primary">
+                <div class="panel-heading"><b><i>Insert New To-Do List</i></b></div>
+                <div class="panel-body">
+                    <form class="form-inline row" name="local.TodoListForm" ng-submit="actions.addNewList()" novalidate>
+                        <div class="form-group col-xs-3">
+                            <label class="control-label">Title</label>
+                            <div>
+                                <input class="form-control input-sm" type="text" ng-minlength="4" name="title" ng-model="local.list.title" required>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-8">
+                            <label class="control-label">Description</label>
+                            <div>
+                                <input class="form-control input-sm" type="text" ng-minlength="7" name="description" ng-model="local.list.description" required>
+                            </div>
+                        </div>
+                        <!--
+                    <div class="form-group col-xs-2">
+                        <label class="control-label">Importance</label>
+                        <div>
+                            <input class="form-control input-sm" type="text" name="importance" ng-model="local.importance" required>
+                        </div>
+                    </div>
+                    -->
+                        <div class="form-group">
+                            <label class="control-label"></label>
+                            <div class="control-group pull-right">
+                                <button class="btn btn-primary" type="submit"><span class="glyphicon glyphicon-plus"></span></button>
+                            </div>
+                        </div>
+                    </form>
+                    <br />
+                    <div class="form-group">
+                        <div class="alert alert-warning " ng-show="local.list.errors.show">
+                            <button type="button" class="close" ng-click="local.list.errors.show=false">&times;</button>
+                            <div ng-bind-html="local.list.errors.message"></div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </script>
+
+        <script type="text/ng-template" id="todoItems.html">
+            <h2><a href="#"><span class="glyphicon glyphicon-arrow-left"></span></a> {{local.item.listTitle}}</h2>
+            <h4>
+                {{local.item.listDescription}}
+            </h4>
+
+            <h4 ng-show="local.todoItems.length>0"><span class="label label-danger">Task Aperti</span></h4>
+            <table id="TodoListTable" class="table table-striped" ng-show="local.todoItems.length>0">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th style="width:55%">Description</th>
+                        <th style="width:10%">Importance</th>
+                        <th style="width:15%">Due Date</th>
+                        <th>Status</th>
+                        <!--<th></th>-->
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr data-ng-repeat="todo in local.todoItems | filter:{ Status: 'Open' } |orderBy:'-Importance'">
+                        <td>{{$index+1}}</td>
+                        <td ng-if="todo.Status=='Closed'" class="strike">{{todo.Description}}</td>
+                        <td ng-if="todo.Status!='Closed'"><textarea class="form-control  input-sm" rows="1" name="description" ng-model="todo.Description" required ng-model-onblur ng-change="actions.changeDescription(todo)"></textarea></td>
+                        <td>
+                            <input class="form-control input-sm" type="number" ng-model="todo.Importance" ng-model-onblur ng-change="actions.changeImportance(todo)" ng-disabled="todo.Status == 'Closed'">
+                        </td>
+                        <!--<td>{{todo.DueDate | date:'dd/MM/yyyy'}}</td>-->
+                        <td>
+                            <p class="input-group">
+                                <input type="text" class="form-control input-sm" datepicker-popup="dd/MM/yyyy" datepicker-options="{{local.item.dateOptions}}" is-open="todo.opened" max-date="'2015-06-22'" ng-model="todo.formatDueDate" ng-required="true" close-text="Close" ng-disabled="todo.Status == 'Closed'" ng-model-onblur ng-change="actions.changeDueDate(todo)" />
+                                <span class="input-group-btn">
+                                    <button type="button" class="btn btn-default btn-sm" ng-click="actions.open($event,todo)" ng-disabled="todo.Status == 'Closed'"><i class="glyphicon glyphicon-calendar"></i></button>
+                                </span>
+                            </p>
+                        </td>
+                        <td>
+                            <button ng-if="todo.Status=='Closed'" type="button" class="btn btn-success btn-sm" ng-click="actions.reOpen(todo)" tooltip="Press to Re-Open"><span class="glyphicon glyphicon-ok"></span></button>
+                            <button ng-if="todo.Status=='Open'" type="button" class="btn btn-danger btn-sm" ng-click="actions.markAsCompleted(todo)" tooltip="Press to mark as Complete"><span class="glyphicon glyphicon-exclamation-sign"></span></button>
+                            {{todo.Status}}
+                        </td>
+                        <!--<td>
+            <button type="button" class="btn btn-default btn-sm" ng-click="actions.changeDescription(todo)"><span class="glyphicon glyphicon-pencil"></span></button>
+            <button type="button" class="btn btn-default btn-sm" ng-click="actions.changeImportance(todo)"><span class="glyphicon glyphicon-signal"></span></button>
+        </td>-->
+                    </tr>
+                </tbody>
+            </table>
+
+            <h4 ng-show="local.todoItems.length>0"><span class="label label-success">Task Completati</span></h4>
+            <table id="TodoListTable" class="table table-striped" ng-show="local.todoItems.length>0">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th style="width:55%">Description</th>
+                        <th style="width:10%">Importance</th>
+                        <th style="width:15%">Due Date</th>
+                        <th>Status</th>
+                        <!--<th></th>-->
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr data-ng-repeat="todo in local.todoItems | filter:{ Status: 'Closed' } |orderBy:'-Importance'">
+                        <td>{{$index+1}}</td>
+                        <td class="strike">{{todo.Description}}</td>
+                        <td>
+                            <input class="form-control input-sm" type="number" ng-model="todo.Importance" ng-model-onblur ng-change="actions.changeImportance(todo)" ng-disabled="todo.Status == 'Closed'">
+                        </td>
+                        <td>{{todo.DueDate | date:'dd/MM/yyyy'}}</td>
+                        <td>
+                            <button type="button" class="btn btn-success btn-sm" ng-click="actions.reOpen(todo)" tooltip="Press to Re-Open"><span class="glyphicon glyphicon-ok"></span></button>
+                            {{todo.Status}}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="panel panel-primary">
+                <div class="panel-heading"><b><i>Insert New To-Do Item</i></b></div>
+                <div class="panel-body">
+                    <form class="form-inline row" name="local.TodoItemForm" ng-submit="actions.addNewItem()" novalidate>
+                        <div class="form-group col-xs-6">
+                            <label class="control-label">Task Description</label>
+                            <div>
+                                <textarea class="form-control" rows="3" name="description" ng-model="local.item.description" required></textarea>
+                                <!--<input class="form-control input-sm" type="text" ng-minlength="4" name="description" ng-model="local.item.description" required>-->
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-2">
+                            <label class="control-label" tooltip="Task Importance">Importance</label>
+                            <div>
+                                <input class="form-control" type="number" name="importance" ng-model="local.item.importance" required>
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-3">
+                            <label class="control-label">Due Date</label>
+                            <p class="input-group">
+                                <input type="text" class="form-control" ng-model="local.item.dueDate" datepicker-popup="dd/MM/yyyy" datepicker-options="{{local.item.dateOptions}}" is-open="opened" max-date="'2015-06-22'" ng-required="true" close-text="Close" />
+                                <span class="input-group-btn">
+                                    <button type="button" class="btn btn-default" ng-click="actions.open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                                </span>
+                            </p>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label"></label>
+                            <div class="control-group pull-right">
+                                <button class="btn btn-primary" type="submit"><span class="glyphicon glyphicon-plus"></span></button>
+                            </div>
+                        </div>
+                        <br />
+                    </form>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="alert alert-warning " ng-show="local.item.errors.show">
+                                <button type="button" class="close" ng-click="local.item.errors.show=false">&times;</button>
+                                <div ng-bind-html="local.item.errors.message"></div>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+        </script>
+
+        <div class="footer">
+            <p>© <a href="http://it.linkedin.com/in/williamverdolini/" target="_blank">William Verdolini</a> 2014</p>
+        </div>
+    </div>
+
+</body>
+</html>
