@@ -1,4 +1,4 @@
-CQRS-ES-Todos
+CQRS+ES Todo List
 =============
 
 A training journey into CQRS+ES
