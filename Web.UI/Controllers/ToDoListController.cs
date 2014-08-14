@@ -66,16 +66,6 @@ namespace Web.UI.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
-        //// PUT api/todolist/5
-        //public void Put(int id, [FromBody]string value)
-        //{
-        //}
-
-        //// DELETE api/todolist/5
-        //public void Delete(int id)
-        //{
-        //}
         #endregion
 
         ///////////////////////
@@ -89,6 +79,14 @@ namespace Web.UI.Controllers
             return Worker.GetListItems(Id);
         }
 
+        //http://www.asp.net/web-api/overview/web-api-routing-and-actions/attribute-routing-in-web-api-2#route-names
+        [Route("api/TodoItems/{Id}", Name = "GetTodoItemById")]
+        [HttpGet]
+        public Task<ToDoItem> GetTodoItem(string Id)
+        {
+            return Worker.GetToDoItem(Id);
+        }
+
         [Route("api/TodoList/Items/{Id}/Add")]
         [HttpPost]
         public IHttpActionResult AddItemToList(AddNewToDoItemCommandModel model)
@@ -99,7 +97,10 @@ namespace Web.UI.Controllers
             try
             {
                 Worker.AddNewToDoItem(model);
-                return Ok();
+                string uri = Url.Link("GetTodoItemById", new { Id = model.Id});
+                var _Uri = new Uri(uri);
+                return Redirect(_Uri);                
+                //return Ok();
             }
             catch (Exception ex)
             {
@@ -142,7 +143,6 @@ namespace Web.UI.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
 
         [Route("api/TodoItems/ChangeDescription")]
         [HttpPost]

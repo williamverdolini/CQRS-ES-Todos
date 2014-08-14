@@ -15,17 +15,14 @@ namespace Web.UI.Worker
     public class ToDoWorker
     {
         private readonly IBus bus;
-        //private readonly IRepository repository;
         private readonly IDatabase database;
 
         public ToDoWorker(IBus commandBus, IRepository repo, IDatabase db)
         {
             Contract.Requires<ArgumentNullException>(commandBus != null, "commandBus");
-            //Contract.Requires<ArgumentNullException>(repo != null, "repo");
             Contract.Requires<ArgumentNullException>(db != null, "db");
 
             bus = commandBus;
-            //repository = repo;
             database = db;
         }
 
@@ -79,7 +76,13 @@ namespace Web.UI.Worker
 
         public async Task<ToDoList> GetListItems(string Id)
         {
-            return await database.ToDoLists.FirstAsync(t => t.Id.Equals(new Guid(Id)));
+            //Eagger loading of List's items
+            return await database.ToDoLists.Include(l => l.Items).FirstAsync(t => t.Id.Equals(new Guid(Id)));
+        }
+
+        public async Task<ToDoItem> GetToDoItem(string Id)
+        {
+            return await database.ToDoItems.FirstAsync(t => t.Id.Equals(new Guid(Id)));
         }
         #endregion
     }

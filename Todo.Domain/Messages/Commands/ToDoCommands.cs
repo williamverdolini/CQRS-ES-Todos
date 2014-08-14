@@ -9,13 +9,6 @@ namespace Todo.Domain.Messages.Commands
         public string Title { get; private set; }
         public string Description { get; private set; }
 
-        //public CreateToDoListCommand(string title, string description)
-        //{
-        //    Id = Guid.NewGuid();
-        //    Title = title;
-        //    Description = description;
-        //}
-
         // GUID generated externally
         public CreateToDoListCommand(string id, string title, string description)
         {
@@ -75,7 +68,6 @@ namespace Todo.Domain.Messages.Commands
             Id = new Guid(id);
         }
     }
-
 
     public class ChangeToDoItemImportanceCommand : Command
     {
