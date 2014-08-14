@@ -15,23 +15,28 @@ using Todo.QueryStack.Logic.EventHandlers;
 
 namespace Web.UI.Injection.Installers
 {
+    //NOTE: for snapshots thanks to http://www.newdavesite.com/view/18365088
     public class AggregateFactory : IConstructAggregates
     {
         public IAggregate Build(Type type, Guid id, IMemento snapshot)
         {
-            //Here we could provide an AOP support
-            //return Activator.CreateInstance(type) as IAggregate;
+            Type typeParam = snapshot != null ? snapshot.GetType() : typeof(Guid);
+            object[] paramArray;
+            if (snapshot != null)
+                paramArray = new object[] { snapshot };
+            else
+                paramArray = new object[] { id };
 
             ConstructorInfo constructor = type.GetConstructor(
-                BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] { typeof(Guid) }, null);
+                BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] { typeParam }, null);
 
             if (constructor == null)
             {
                 throw new InvalidOperationException(
-                    string.Format("Aggregate {0} cannot be created: constructor with only id parameter not provided",
+                    string.Format("Aggregate {0} cannot be created: constructor with proper parameter not provided",
                                   type.Name));
             }
-            return constructor.Invoke(new object[] { id }) as IAggregate;
+            return constructor.Invoke(paramArray) as IAggregate;
         }
     }
 

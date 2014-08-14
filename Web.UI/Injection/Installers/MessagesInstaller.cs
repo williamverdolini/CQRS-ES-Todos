@@ -18,7 +18,7 @@ namespace Web.UI.Injection.Installers
         {
             container.Register(
                 Classes
-                .FromAssemblyContaining<ToDoCommandHandlers>()
+                .FromAssemblyContaining<ToDoListCommandHandlers>()
                 .BasedOn(typeof(ICommandHandler<>)) // That implement ICommandHandler Interface
                 .WithService.Base()    // and its name contain "CommandHandler"
                 .LifestyleSingleton()

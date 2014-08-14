@@ -1,11 +1,12 @@
-﻿using CommonDomain.Core;
+﻿using CommonDomain;
+using CommonDomain.Core;
 using System;
 using Todo.Domain.Messages.Events;
-
+using Todo.Infrastructure.Domain;
 
 namespace Todo.Domain.Model
 {
-    public class ToDoItem : AggregateBase
+    public class ToDoItem : AggregateBase, IMementoCreator
     {
         public Guid ToDoListId { get; private set; }
         public string Description { get; private set; }
@@ -19,6 +20,21 @@ namespace Todo.Domain.Model
         private ToDoItem(Guid toDoItemId)
         {
             Id = toDoItemId;
+        }
+
+        //constructor with IMemento parameter for EventStore Snapshooting
+        private ToDoItem(ToDoItemMemento mementoItem)
+        {
+            Id = mementoItem.Id;
+            Version = mementoItem.Version;
+
+            ToDoListId = mementoItem.ToDoListId;
+            Description = mementoItem.Description;
+            CreationDate = mementoItem.CreationDate;
+            DueDate = mementoItem.DueDate;
+            Importance = mementoItem.Importance;
+            ClosingDate = mementoItem.ClosingDate;
+            UserId = mementoItem.UserId;
         }
 
         #region Add New ToDoItem 
@@ -98,5 +114,41 @@ namespace Todo.Domain.Model
             DueDate = @event.DueDate;
         }
         #endregion
+
+        #region TodoItem Memento factory
+        public IMemento CreateMemento()
+        {
+            return new ToDoItemMemento(Id, Version, ToDoListId, Description, CreationDate, DueDate, Importance, ClosingDate, UserId);
+        }
+        #endregion
+
     }
+
+    public class ToDoItemMemento : IMemento
+    {
+        public Guid Id { get; set; }
+        public int Version { get; set; }
+        public Guid ToDoListId { get; private set; }
+        public string Description { get; private set; }
+        public DateTime CreationDate { get; private set; }
+        public DateTime? DueDate { get; private set; }
+        public int Importance { get; private set; }
+        public DateTime? ClosingDate { get; private set; }
+        public Guid UserId { get; private set; }
+
+        public ToDoItemMemento(Guid id, int version, Guid toDoList, string description, DateTime creationDate, DateTime? dueDate, int importance, DateTime? closingDate, Guid userId)
+        {
+            Id = id;
+            Version = version;
+            ToDoListId = toDoList;
+            Description = description;
+            CreationDate = creationDate;
+            DueDate = dueDate;
+            Importance = importance;
+            ClosingDate = closingDate;
+            UserId = userId;
+        }
+    }
+
+
 }

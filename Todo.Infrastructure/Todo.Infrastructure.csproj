@@ -49,7 +49,9 @@
     <Compile Include="Commands\ICommandHandler.cs" />
     <Compile Include="Commands\ICommandHandlerFactory.cs" />
     <Compile Include="Commands\ICommandValidatorFactory.cs" />
+    <Compile Include="Commands\SnapshotCreator.cs" />
     <Compile Include="Contract.cs" />
+    <Compile Include="Domain\IMementoCreator.cs" />
     <Compile Include="Events\Event.cs" />
     <Compile Include="Events\EventBus.cs" />
     <Compile Include="Events\IEventHandler.cs" />

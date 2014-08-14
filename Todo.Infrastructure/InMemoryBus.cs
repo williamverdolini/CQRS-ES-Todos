@@ -1,11 +1,10 @@
-﻿using Todo.Infrastructure.Commands;
-using Todo.Infrastructure.Events;
+﻿using FluentValidation;
 using NEventStore.Dispatcher;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using FluentValidation;
-using FluentValidation.Results;
+using System.Reflection;
+using Todo.Infrastructure.Commands;
+using Todo.Infrastructure.Events;
 
 namespace Todo.Infrastructure
 {
@@ -48,6 +47,19 @@ namespace Todo.Infrastructure
             {
                 handler.Handle(message);
             }
+            #endregion
+
+            #region Aggregates Snapshooting
+            #if DEBUG
+            foreach (var handler in handlers)
+            {
+                // If commandHandler is a SnapshotCreator it handles the snapshoot persistance.
+                // NOTE: Very unrealistic Snapsooting policy/implementation, but it's just for training purposes
+                MethodInfo method = handler.GetType().GetMethod("SaveSnapShot");
+                if(method != null)
+                    method.Invoke(handler, new object[] { message });
+            }
+            #endif
             #endregion
         }
         #endregion
