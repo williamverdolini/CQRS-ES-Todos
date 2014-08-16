@@ -100,7 +100,7 @@ namespace Todo.CommandStack.Logic.Validators
         public ChangeToDoItemDueDateCommandValidator()
         {
             // If DueDate is not null, it should be >= today
-            RuleFor(command => command.DueDate).GreaterThanOrEqualTo(DateTime.Now).When(command => command.DueDate != null);
+            RuleFor(command => command.DueDate.Value.Date).GreaterThanOrEqualTo(DateTime.Now.Date).When(command => command.DueDate != null);
         }
     }
 }

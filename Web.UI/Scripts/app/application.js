@@ -57,7 +57,7 @@ angular.module('TodoApp')
             when('/items/:Id', { controller: 'TodoListItemsController', templateUrl: 'todoItems.html' }).
             otherwise({ redirectTo: "/" });
     })
-    .controller('TodoListController', ['$scope', '$http', '$location', 'w$settings', 'w$utils', '$sce', function ($scope, $http, $location, w$settings, w$utils, $sce) {
+    .controller('TodoListController', ['$scope', '$http', '$location', 'w$settings', 'w$utils', function ($scope, $http, $location, w$settings, w$utils) {
         $scope.local = {
             TodoListForm: null,
             TodoItemForm: null,
@@ -158,7 +158,6 @@ angular.module('TodoApp')
                                 angular.forEach(result.Items, function (element, index) {
                                     var item = element;
                                     item.Status = item.ClosingDate ? 'Closed' : 'Open';
-                                    //item.formatDueDate = new Date($filter('date')(item.DueDate, 'dd/MM/yyyy'));
                                     item.formatDueDate = item.DueDate != null ? new Date(item.DueDate) : null;
                                     this.push(item);
                                 }, $scope.local.todoItems);
@@ -171,22 +170,27 @@ angular.module('TodoApp')
                 else $scope.opened = true;
             },
             addNewItem: function () {
+                $scope.local.item.errors.show = false;
+                $scope.local.item.errors.message = null;
+
                 var _input = {
                     toDoListId: $scope.local.item.listId,
                     id: w$utils.guid(),
                     jsonDueDate: $scope.local.item.dueDate,
                     importance: $scope.local.item.importance,
                     description: $scope.local.item.description,
-                    jsonCreationDate : new Date()
+                    jsonCreationDate: new Date()
                 }
 
-                $http.post(w$settings.apiUrl + 'TodoList/Items/'+$scope.local.item.listId+'/Add', _input)
+                $http.post(w$settings.apiUrl + 'TodoList/Items/' + $scope.local.item.listId + '/Add', _input)
                     .success(
-                        function (result, status) {
+                        function (result, status, headers) {
                             $scope.actions.loadList();
                             $scope.local.item.description = null;
                             $scope.local.item.importance = null;
                             $scope.local.item.dueDate = null;
+                            $scope.local.item.errors.show = false;
+                            $scope.local.item.errors.message = null;
                         })
                     .error(
                         function (data, status, headers, config) {
