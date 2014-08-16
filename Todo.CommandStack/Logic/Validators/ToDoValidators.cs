@@ -37,7 +37,7 @@ namespace Todo.CommandStack.Logic.Validators
             RuleFor(command => command.Id).NotEmpty();
             RuleFor(command => command.Description).NotEmpty();
             // If DueDate is not null, it should be >= CreationDate
-            RuleFor(command => command.DueDate).GreaterThanOrEqualTo(command => command.CreationDate).When(command => command.DueDate != null);
+            RuleFor(command => command.DueDate.Value.Date).GreaterThanOrEqualTo(command => command.CreationDate.Date).When(command => command.DueDate != null);
             RuleFor(command => command.Importance).GreaterThanOrEqualTo(0);
         }
     }
