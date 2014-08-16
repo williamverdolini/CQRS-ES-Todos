@@ -20,7 +20,8 @@ namespace Web.UI
         {
             this.container = new WindsorContainer()
                 .Install(
-                        new MessagesInstaller(),
+                        new CommandStackInstaller(),
+                        new QueryStackInstaller(),
                         new EventStoreInstaller(),
                         new ControllersInstaller()
                         ); 

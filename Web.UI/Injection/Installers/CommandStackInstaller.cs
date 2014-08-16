@@ -7,12 +7,10 @@ using Todo.CommandStack.Logic.CommandHandlers;
 using Todo.CommandStack.Logic.Validators;
 using Todo.Infrastructure.Commands;
 using Todo.Infrastructure.Events;
-using Todo.QueryStack;
-using Todo.QueryStack.Logic.EventHandlers;
 
 namespace Web.UI.Injection.Installers
 {
-    public class MessagesInstaller : IWindsorInstaller
+    public class CommandStackInstaller : IWindsorInstaller
     {
         public void Install(IWindsorContainer container, IConfigurationStore store)
         {
@@ -32,22 +30,11 @@ namespace Web.UI.Injection.Installers
                 .LifestyleSingleton()
                 );
 
-            container.Register(
-                Classes
-                .FromAssemblyContaining<ToDoEventHandlers>()
-                .BasedOn(typeof(IEventHandler<>)) // That implement ICommandHandler Interface
-                .WithService.Base()    // and its name contain "CommandHandler"
-                .LifestyleSingleton()
-                );
-
             // DI Registration for Typed Factory for Command and Event Handlers
             container.AddFacility<TypedFactoryFacility>()
                 .Register(Component.For<ICommandHandlerFactory>().AsFactory())
                 .Register(Component.For<ICommandValidatorFactory>().AsFactory())
                 .Register(Component.For<IEventHandlerFactory>().AsFactory());
-
-            // DI Registration for IDatabase (QueryStack)
-            container.Register(Component.For<IDatabase>().ImplementedBy<Database>().LifestyleTransient());
         }
     }
 

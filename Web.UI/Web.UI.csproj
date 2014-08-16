@@ -169,7 +169,8 @@
     <Compile Include="Controllers\ToDoListController.cs" />
     <Compile Include="Injection\Installers\ControllersInstaller.cs" />
     <Compile Include="Injection\Installers\EventStoreInstaller.cs" />
-    <Compile Include="Injection\Installers\MessagesInstaller.cs" />
+    <Compile Include="Injection\Installers\CommandStackInstaller.cs" />
+    <Compile Include="Injection\Installers\QueryStackInstaller.cs" />
     <Compile Include="Injection\WebAPI\WindsorCompositionRoot.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>

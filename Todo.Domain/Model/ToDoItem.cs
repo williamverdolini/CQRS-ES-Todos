@@ -27,7 +27,6 @@ namespace Todo.Domain.Model
         {
             Id = mementoItem.Id;
             Version = mementoItem.Version;
-
             ToDoListId = mementoItem.ToDoListId;
             Description = mementoItem.Description;
             CreationDate = mementoItem.CreationDate;
