@@ -44,27 +44,32 @@ namespace Web.UI.Worker
 
         public void MarkToDoItemAsComplete(MarkToDoItemAsCompleteModel model)
         {
-            bus.Send<MarkToDoItemAsCompleteCommand>(new MarkToDoItemAsCompleteCommand(model.Id,model.ClosingDate));
+            //ToDoItem todo = database.ToDoItems.First<ToDoItem>(item => item.Id.ToString().Equals(model.Id));
+            bus.Send<MarkToDoItemAsCompleteCommand>(new MarkToDoItemAsCompleteCommand(model.Id, model.ToDoListId, model.ClosingDate));
         }
 
         public void ReOpenToDoItem(ReOpenToDoItemModel model)
         {
-            bus.Send<ReOpenToDoItemCommand>(new ReOpenToDoItemCommand(model.Id));
+            //ToDoItem todo = database.ToDoItems.First<ToDoItem>(item => item.Id.ToString().Equals(model.Id));
+            bus.Send<ReOpenToDoItemCommand>(new ReOpenToDoItemCommand(model.Id, model.ToDoListId.ToString()));
         }
 
         public void ChangeImportance(ChangeToDoItemImportanceModel model)
         {
-            bus.Send<ChangeToDoItemImportanceCommand>(new ChangeToDoItemImportanceCommand(model.Id, model.Importance));
+            //ToDoItem todo = database.ToDoItems.First<ToDoItem>(item => item.Id.ToString().Equals(model.Id));
+            bus.Send<ChangeToDoItemImportanceCommand>(new ChangeToDoItemImportanceCommand(model.Id, model.ToDoListId, model.Importance));
         }
 
         public void ChangeDescription(ChangeToDoItemDescriptionModel model)
         {
-            bus.Send<ChangeToDoItemDescriptionCommand>(new ChangeToDoItemDescriptionCommand(model.Id, model.Description));
+            //ToDoItem todo = database.ToDoItems.First<ToDoItem>(item => item.Id.ToString().Equals(model.Id));
+            bus.Send<ChangeToDoItemDescriptionCommand>(new ChangeToDoItemDescriptionCommand(model.Id, model.ToDoListId, model.Description));
         }
 
         public void ChangeDueDate(ChangeToDoItemDueDateModel model)
         {
-            bus.Send<ChangeToDoItemDueDateCommand>(new ChangeToDoItemDueDateCommand(model.Id, model.DueDate));
+            //ToDoItem todo = database.ToDoItems.First<ToDoItem>(item => item.Id.ToString().Equals(model.Id));
+            bus.Send<ChangeToDoItemDueDateCommand>(new ChangeToDoItemDueDateCommand(model.Id, model.ToDoListId, model.DueDate));
         }
         #endregion
 

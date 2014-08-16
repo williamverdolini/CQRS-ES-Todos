@@ -53,51 +53,62 @@ namespace Todo.Domain.Messages.Commands
     public class MarkToDoItemAsCompleteCommand : Command
     {
         public DateTime ClosingDate { get; private set; }
+        public Guid ToDoListId {get; private set;}
 
-        public MarkToDoItemAsCompleteCommand(string id, DateTime closingDate)
+        public MarkToDoItemAsCompleteCommand(string id, string toDoListId, DateTime closingDate)
         {
             Id = new Guid(id);
+            ToDoListId = new Guid(toDoListId);
             ClosingDate = closingDate;
         }
     }
 
     public class ReOpenToDoItemCommand : Command
     {
-        public ReOpenToDoItemCommand(string id)
+        public Guid ToDoListId { get; private set; }
+
+        public ReOpenToDoItemCommand(string id, string toDoListId)
         {
             Id = new Guid(id);
+            ToDoListId = new Guid(toDoListId);
         }
     }
 
     public class ChangeToDoItemImportanceCommand : Command
     {
+        public Guid ToDoListId { get; private set; }
         public int Importance { get; set; }
 
-        public ChangeToDoItemImportanceCommand(string id, int importance)
+        public ChangeToDoItemImportanceCommand(string id, string toDoListId, int importance)
         {
             Id = new Guid(id);
+            ToDoListId = new Guid(toDoListId);
             Importance = importance;
         }
     }
 
     public class ChangeToDoItemDescriptionCommand : Command
     {
-        public string Description{ get; set; }
+        public Guid ToDoListId { get; private set; }
+        public string Description { get; set; }
 
-        public ChangeToDoItemDescriptionCommand(string id, string description)
+        public ChangeToDoItemDescriptionCommand(string id, string toDoListId, string description)
         {
             Id = new Guid(id);
+            ToDoListId = new Guid(toDoListId);
             Description = description;
         }
     }
 
     public class ChangeToDoItemDueDateCommand : Command
     {
+        public Guid ToDoListId { get; private set; }
         public DateTime? DueDate { get; set; }
 
-        public ChangeToDoItemDueDateCommand(string id, DateTime? dueDate)
+        public ChangeToDoItemDueDateCommand(string id, string toDoListId, DateTime? dueDate)
         {
             Id = new Guid(id);
+            ToDoListId = new Guid(toDoListId);
             DueDate = dueDate;
         }
     }

@@ -32,13 +32,26 @@ namespace Todo.CommandStack.Logic.Validators
 
     public class AddNewToDoItemCommandValidator : AbstractValidator<AddNewToDoItemCommand>
     {
-        public AddNewToDoItemCommandValidator()
+        private readonly IRepository repository;
+
+        public AddNewToDoItemCommandValidator(IRepository repo)
         {
+            Contract.Requires<ArgumentNullException>(repo != null, "repo");
+            repository = repo;
+
             RuleFor(command => command.Id).NotEmpty();
             RuleFor(command => command.Description).NotEmpty();
             // If DueDate is not null, it should be >= CreationDate
             RuleFor(command => command.DueDate.Value.Date).GreaterThanOrEqualTo(command => command.CreationDate.Date).When(command => command.DueDate != null);
             RuleFor(command => command.Importance).GreaterThanOrEqualTo(0);
+            // Importance must be >=0 and unique among other item's importance
+            RuleFor(command => command.Importance).Must(BeUniqueAmongItemsImportance).WithMessage("{PropertyName} must be unique in the List");
+        }
+
+        private bool BeUniqueAmongItemsImportance(AddNewToDoItemCommand command, int importance)
+        {
+            ToDoList list = repository.GetById<ToDoList>(command.TodoListId);
+            return !list.Items.Any<ToDoItem>(todo => todo.Importance.Equals(importance));
         }
     }
 
@@ -81,9 +94,23 @@ namespace Todo.CommandStack.Logic.Validators
 
     public class ChangeToDoItemImportanceCommandValidator : AbstractValidator<ChangeToDoItemImportanceCommand>
     {
-        public ChangeToDoItemImportanceCommandValidator()
+        private readonly IRepository repository;
+
+        public ChangeToDoItemImportanceCommandValidator(IRepository repo)
         {
+            Contract.Requires<ArgumentNullException>(repo != null, "repo");
+            repository = repo;
+
             RuleFor(command => command.Importance).NotEmpty().GreaterThanOrEqualTo(0);
+            // Importance must be >=0 and unique among other item's importance
+            RuleFor(command => command.Importance).Must(BeUniqueAmongItemsImportance).WithMessage("{PropertyName} must be unique in the List");
+
+        }
+
+        private bool BeUniqueAmongItemsImportance(ChangeToDoItemImportanceCommand command, int importance)
+        {
+            ToDoList list = repository.GetById<ToDoList>(command.ToDoListId);
+            return !list.Items.Any<ToDoItem>(todo => todo.Importance.Equals(importance));
         }
     }
 

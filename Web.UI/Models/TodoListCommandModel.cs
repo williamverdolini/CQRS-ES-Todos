@@ -33,6 +33,7 @@ namespace Web.UI.Models.TodoList
     public class MarkToDoItemAsCompleteModel
     {
         public string Id { get; set; }
+        public string ToDoListId { get; set; }
         public string JsonClosingDate { get; set; }
         public DateTime ClosingDate { get { return DateTime.Parse(JsonClosingDate); } }
     }
@@ -40,23 +41,27 @@ namespace Web.UI.Models.TodoList
     public class ReOpenToDoItemModel
     {
         public string Id { get; set; }
+        public string ToDoListId { get; set; }
     }
 
     public class ChangeToDoItemImportanceModel
     {
         public string Id { get; set; }
+        public string ToDoListId { get; set; }
         public int Importance { get; set; }
     }
 
     public class ChangeToDoItemDescriptionModel
     {
         public string Id { get; set; }
+        public string ToDoListId { get; set; }
         public string Description { get; set; }
     }
 
     public class ChangeToDoItemDueDateModel
     {
         public string Id { get; set; }
+        public string ToDoListId { get; set; }
         public DateTime? DueDate { get; set; }        
     }
 

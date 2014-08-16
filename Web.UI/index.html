@@ -222,12 +222,19 @@
                             <button ng-if="todo.Status=='Open'" type="button" class="btn btn-danger btn-sm" ng-click="actions.markAsCompleted(todo)" tooltip="Press to mark as Complete"><span class="glyphicon glyphicon-exclamation-sign"></span></button>
                             {{todo.Status}}
                         </td>
-                        <!--<td>
-            <button type="button" class="btn btn-default btn-sm" ng-click="actions.changeDescription(todo)"><span class="glyphicon glyphicon-pencil"></span></button>
-            <button type="button" class="btn btn-default btn-sm" ng-click="actions.changeImportance(todo)"><span class="glyphicon glyphicon-signal"></span></button>
-        </td>-->
+                        
                     </tr>
                 </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="5">
+                            <div class="alert alert-warning " ng-show="local.todoItemsError.show">
+                                <button type="button" class="close" ng-click="local.todoItemsError.show=false">&times;</button>
+                                <div ng-bind-html="local.todoItemsError.message"></div>
+                            </div>
+                        </td>
+                    </tr>
+                </tfoot>
             </table>
 
             <h4 ng-show="local.todoItems.length>0"><span class="label label-success">Completed Tasks</span></h4>
@@ -247,7 +254,7 @@
                         <td>{{$index+1}}</td>
                         <td class="strike">{{todo.Description}}</td>
                         <td>
-                            <input class="form-control input-sm" type="number" ng-model="todo.Importance" ng-model-onblur ng-change="actions.changeImportance(todo)" ng-disabled="todo.Status == 'Closed'">
+                            <input class="form-control input-sm" type="number" ng-model="todo.Importance" ng-model-onblur ng-change="actions.changeImportance(todo)" ng-disabled="todo.Status == 'Closed'" >
                         </td>
                         <td>{{todo.DueDate | date:'dd/MM/yyyy'}}</td>
                         <td>

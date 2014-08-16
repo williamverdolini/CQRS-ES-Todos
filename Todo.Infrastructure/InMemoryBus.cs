@@ -56,7 +56,7 @@ namespace Todo.Infrastructure
                 // If commandHandler is a SnapshotCreator it handles the snapshoot persistance.
                 // NOTE: Very unrealistic Snapsooting policy/implementation, but it's just for training purposes
                 MethodInfo method = handler.GetType().GetMethod("SaveSnapShot");
-                if(method != null)
+                if (method != null)
                     method.Invoke(handler, new object[] { message });
             }
             #endif

@@ -144,7 +144,15 @@ angular.module('TodoApp')
                 }
 
             },
-            todoItems: []
+            todoItems: [],
+            todoItemsError: {
+                show: false,
+                message: ''
+            }
+        }
+
+        var getUniversalDate = function (_date) {
+            return new Date(_date.getTime() - (_date.getTimezoneOffset() * 60 * 1000));
         }
 
         $scope.actions = {
@@ -159,6 +167,9 @@ angular.module('TodoApp')
                                     var item = element;
                                     item.Status = item.ClosingDate ? 'Closed' : 'Open';
                                     item.formatDueDate = item.DueDate != null ? new Date(item.DueDate) : null;
+                                    item._Importance = item.Importance;
+                                    item._Description = item.Description;
+                                    item._formatDueDate = item.formatDueDate;
                                     this.push(item);
                                 }, $scope.local.todoItems);
                             });
@@ -201,18 +212,25 @@ angular.module('TodoApp')
             markAsCompleted: function (_item) {
                 var _input = {
                     id: _item.Id,
+                    toDoListId: $scope.local.item.listId,
                     jsonClosingDate: new Date()
                 }
 
                 $http.post(w$settings.apiUrl + 'TodoItems/MarkAsComplete', _input)
-                    .success(
-                        function (result, status) {
+                    .success(function (result, status) {
                             _item.Status = 'Closed';
-                        });
+                            $scope.local.todoItemsError.message = '';
+                            $scope.local.todoItemsError.show = false;
+                        })
+                        .error(function (data, status, headers, config) {
+                            $scope.local.todoItemsError.message = w$utils.getFluentValidationMessage(data.Message);
+                            $scope.local.todoItemsError.show = true;
+                        })
             },
             reOpen: function (_item) {
                 var _input = {
-                    id: _item.Id
+                    id: _item.Id,
+                    toDoListId: $scope.local.item.listId
                 }
 
                 $http.post(w$settings.apiUrl + 'TodoItems/ReOpen', _input)
@@ -224,41 +242,66 @@ angular.module('TodoApp')
             changeDescription: function (_item) {
                 var _input = {
                     id: _item.Id,
+                    toDoListId: $scope.local.item.listId,
                     description: _item.Description
                 }
 
                 $http.post(w$settings.apiUrl + 'TodoItems/ChangeDescription', _input)
-                    .success(
-                        function (result, status) {
-                            console.log('ok');
-                        });
+                    .success(function (result, status) {
+                            $scope.local.todoItemsError.message = '';
+                            $scope.local.todoItemsError.show = false;
+                            _item._Description = _item.Description
+                        })
+                        .error(function (data, status, headers, config) {
+                            $scope.local.todoItemsError.message = w$utils.getFluentValidationMessage(data.Message);
+                            $scope.local.todoItemsError.show = true;
+                            _item.Description = _item._Description
+                        })
             },
             changeDueDate: function (_item) {
                 if ((_item.DueDate == null && _item.formatDueDate != null) || (_item.DueDate != null && _item.formatDueDate - new Date(_item.DueDate) != 0)) {
                     _item.DueDate = _item.formatDueDate;
+
                     var _input = {
                         id: _item.Id,
-                        dueDate: _item.formatDueDate
+                        toDoListId: $scope.local.item.listId,
+                        dueDate: getUniversalDate(_item.formatDueDate)
+                        //dueDate: $filter('date')(_item.formatDueDate, 'dd-MM-yyyyTHH:mm:ss')
                     }
 
                     $http.post(w$settings.apiUrl + 'TodoItems/ChangeDueDate', _input)
-                        .success(
-                            function (result, status) {
-                                console.log('ok');
-                            });
+                        .success(function (result, status) {
+                                $scope.local.todoItemsError.message = '';
+                                $scope.local.todoItemsError.show = false;
+                                _item.DueDate = _item.formatDueDate;
+                                item._formatDueDate = _item.formatDueDate;
+
+                            })
+                        .error(function (data, status, headers, config) {
+                            $scope.local.todoItemsError.message = w$utils.getFluentValidationMessage(data.Message);
+                            $scope.local.todoItemsError.show = true;
+                            item.formatDueDate = _item._formatDueDate;
+                        })
                 }
             },
             changeImportance: function (_item) {
                 var _input = {
                     id: _item.Id,
-                    importance : _item.Importance
+                    toDoListId: $scope.local.item.listId,
+                    importance: _item.Importance
                 }
 
                 $http.post(w$settings.apiUrl + 'TodoItems/ChangeImportance', _input)
-                    .success(
-                        function (result, status) {
-                            console.log('ok');
-                        });
+                    .success(function (result, status) {
+                        $scope.local.todoItemsError.message = '';
+                        $scope.local.todoItemsError.show = false;
+                        _item._Importance = _item.Importance
+                    })
+                    .error(function (data, status, headers, config) {
+                        $scope.local.todoItemsError.message = w$utils.getFluentValidationMessage(data.Message);
+                        $scope.local.todoItemsError.show = true;
+                        _item.Importance = _item._Importance
+                    })
             }
         }
         $scope.actions.loadList();

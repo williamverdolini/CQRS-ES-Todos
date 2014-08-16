@@ -39,17 +39,12 @@ namespace Todo.Domain.Model
         #region Add New ToDoItem 
         public ToDoItem(Guid toDoListId, Guid todoItemId, DateTime creationDate, string description, DateTime? dueDate, int importance)
         {
-            RaiseEvent(new AddedNewToDoItemEvent(toDoListId, todoItemId, creationDate, description, dueDate, importance));
-        }
-
-        void Apply(AddedNewToDoItemEvent @event)
-        {
-            Id = @event.ToDoItemId;
-            ToDoListId = @event.ToDoListId;
-            Description = @event.Description;
-            CreationDate = @event.CreationDate;
-            DueDate = @event.DueDate;
-            Importance = @event.Importance;
+            Id = todoItemId;
+            ToDoListId = toDoListId;
+            Description = description;
+            CreationDate = creationDate;
+            DueDate = dueDate;
+            Importance = importance;
             ClosingDate = null;
         }
         #endregion
@@ -57,60 +52,35 @@ namespace Todo.Domain.Model
         #region Close ToDoItem
         public void Close(DateTime closingDate)
         {
-            RaiseEvent(new MarkedToDoItemAsCompletedEvent(Id, closingDate));
-        }
-
-        void Apply(MarkedToDoItemAsCompletedEvent @event)
-        {
-            ClosingDate = @event.ClosingDate;
+            ClosingDate = closingDate;
         }
         #endregion
 
         #region Re-Open ToDoItem
         public void ReOpen()
         {
-            RaiseEvent(new ReOpenedToDoItemEvent(Id));
-        }
-
-        void Apply(ReOpenedToDoItemEvent @event)
-        {
             ClosingDate = null;
         }
         #endregion
 
         #region Change Importance
-        public void ChangeImportance(int Importance)
+        public void ChangeImportance(int importance)
         {
-            RaiseEvent(new ChangedToDoItemImportanceEvent(Id, Importance));
-        }
-
-        void Apply(ChangedToDoItemImportanceEvent @event)
-        {
-            Importance = @event.Importance;
+            Importance = importance;
         }
         #endregion
 
         #region Change Description
-        public void ChangeDescription(string Description)
+        public void ChangeDescription(string description)
         {
-            RaiseEvent(new ChangedToDoItemDescriptionEvent(Id, Description));
-        }
-
-        void Apply(ChangedToDoItemDescriptionEvent @event)
-        {
-            Description = @event.Description;
+            Description = description;
         }
         #endregion
 
         #region Change DueDate
-        public void ChangeDueDate(DateTime? DueDate)
+        public void ChangeDueDate(DateTime? dueDate)
         {
-            RaiseEvent(new ChangedToDoItemDueDateEvent(Id, DueDate));
-        }
-
-        void Apply(ChangedToDoItemDueDateEvent @event)
-        {
-            DueDate = @event.DueDate;
+            DueDate = dueDate;
         }
         #endregion
 
