@@ -32,13 +32,25 @@ namespace Todo.CommandStack.Logic.Validators
 
     public class AddNewToDoItemCommandValidator : AbstractValidator<AddNewToDoItemCommand>
     {
-        public AddNewToDoItemCommandValidator()
+        private readonly IDatabase database;
+
+        public AddNewToDoItemCommandValidator(IDatabase db)
         {
+            Contract.Requires<ArgumentNullException>(db != null, "db");
+            database = db;
+
             RuleFor(command => command.Id).NotEmpty();
             RuleFor(command => command.Description).NotEmpty();
             // If DueDate is not null, it should be >= CreationDate
             RuleFor(command => command.DueDate.Value.Date).GreaterThanOrEqualTo(command => command.CreationDate.Date).When(command => command.DueDate != null);
             RuleFor(command => command.Importance).GreaterThanOrEqualTo(0);
+            // Importance must be >=0 and unique among other item's importance
+            RuleFor(command => command.Importance).Must(BeUniqueAmongItemsImportance).WithMessage("{PropertyName} must be unique in the List");
+        }
+
+        private bool BeUniqueAmongItemsImportance(AddNewToDoItemCommand command, int importance)
+        {
+            return !database.ToDoItems.Any(todo => todo.Importance.Equals(importance));
         }
     }
 
@@ -81,9 +93,21 @@ namespace Todo.CommandStack.Logic.Validators
 
     public class ChangeToDoItemImportanceCommandValidator : AbstractValidator<ChangeToDoItemImportanceCommand>
     {
-        public ChangeToDoItemImportanceCommandValidator()
+        private readonly IDatabase database;
+
+        public ChangeToDoItemImportanceCommandValidator(IDatabase db)
         {
+            Contract.Requires<ArgumentNullException>(db != null, "db");
+            database = db;
+
             RuleFor(command => command.Importance).NotEmpty().GreaterThanOrEqualTo(0);
+            // Importance must be >=0 and unique among other item's importance
+            RuleFor(command => command.Importance).Must(BeUniqueAmongItemsImportance).WithMessage("{PropertyName} must be unique in the List");
+        }
+
+        private bool BeUniqueAmongItemsImportance(ChangeToDoItemImportanceCommand command, int importance)
+        {
+            return !database.ToDoItems.Any(todo => todo.Importance.Equals(importance));
         }
     }
 
