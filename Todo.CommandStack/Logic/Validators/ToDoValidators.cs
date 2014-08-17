@@ -50,7 +50,7 @@ namespace Todo.CommandStack.Logic.Validators
 
         private bool BeUniqueAmongItemsImportance(AddNewToDoItemCommand command, int importance)
         {
-            return !database.ToDoItems.Any(todo => todo.Importance.Equals(importance));
+            return !database.ToDoItems.Any(todo => todo.ToDoListId.Equals(command.TodoListId) && todo.Importance.Equals(importance));
         }
     }
 
@@ -107,7 +107,10 @@ namespace Todo.CommandStack.Logic.Validators
 
         private bool BeUniqueAmongItemsImportance(ChangeToDoItemImportanceCommand command, int importance)
         {
-            return !database.ToDoItems.Any(todo => todo.Importance.Equals(importance));
+            return  (from todo in database.ToDoItems
+                       join list in database.ToDoLists on todo.ToDoListId equals list.Id
+                       where todo.Importance == importance
+                       select todo).Count() == 0;
         }
     }
 
