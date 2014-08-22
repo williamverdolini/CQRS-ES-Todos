@@ -49,6 +49,9 @@
     <Compile Include="Database.cs" />
     <Compile Include="IDatabase.cs" />
     <Compile Include="Logic\EventHandlers\ToDoEventHandlers.cs" />
+    <Compile Include="Logic\Services\IdentityMapper.cs" />
+    <Compile Include="Logic\Services\IIdentityMapper.cs" />
+    <Compile Include="Model\IdentityMap.cs" />
     <Compile Include="Model\ToDoItem.cs" />
     <Compile Include="Model\ToDoList.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

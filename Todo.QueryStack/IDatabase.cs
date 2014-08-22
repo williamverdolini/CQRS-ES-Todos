@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Todo.QueryStack.Logic.Services;
 using Todo.QueryStack.Model;
 
 namespace Todo.QueryStack
@@ -8,5 +9,7 @@ namespace Todo.QueryStack
         IQueryable<ToDoList> ToDoLists { get; }
 
         IQueryable<ToDoItem> ToDoItems { get; }
+
+        IIdentityMapper IdMaps { get; }
     }
 }

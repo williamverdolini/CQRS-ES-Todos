@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Todo.QueryStack.Logic.Services;
 using Todo.QueryStack.Model;
 
 namespace Todo.QueryStack
@@ -6,8 +7,11 @@ namespace Todo.QueryStack
     public class Database : IDatabase
     {
         private ToDoContext Context;
-        public Database()
+        private readonly IIdentityMapper _identityMapper;
+
+        public Database(IIdentityMapper identityMapper)
         {
+            _identityMapper = identityMapper;
             Context = new ToDoContext();
             //Context.Configuration.AutoDetectChangesEnabled = false;
             // Lazy loading is turned off
@@ -24,6 +28,11 @@ namespace Todo.QueryStack
         public IQueryable<ToDoItem> ToDoItems
         {
             get { return Context.Items; }
+        }
+
+        public IIdentityMapper IdMaps
+        {
+            get { return _identityMapper; }
         }
 
     }

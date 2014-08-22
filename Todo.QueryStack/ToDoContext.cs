@@ -10,5 +10,7 @@ namespace Todo.QueryStack
         public virtual DbSet<ToDoList> Lists { get; set; }
 
         public virtual DbSet<ToDoItem> Items { get; set; }
+
+        public virtual DbSet<IdentityMap> IdMap { get; set; }
     }
 }

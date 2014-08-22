@@ -3,6 +3,7 @@ using System.Data.Entity;
 using System.Linq;
 using Todo.Domain.Messages.Events;
 using Todo.Infrastructure.Events;
+using Todo.QueryStack.Logic.Services;
 using Todo.QueryStack.Model;
 
 namespace Todo.QueryStack.Logic.EventHandlers
@@ -17,17 +18,25 @@ namespace Todo.QueryStack.Logic.EventHandlers
         IEventHandler<ChangedToDoItemDescriptionEvent>,
         IEventHandler<ChangedToDoItemDueDateEvent>
     {
+        private readonly IIdentityMapper _identityMapper;
+
+        public ToDoEventHandlers(IIdentityMapper identityMapper)
+        {
+            _identityMapper = identityMapper;
+        }
+
         public void Handle(CreatedToDoListEvent @event)
         {
             using(var db = new ToDoContext())
             {
-                db.Lists.Add(new Model.ToDoList()
+                var _list = new Model.ToDoList()
                                 {
-                                    Id = @event.ToDoListId,
                                     Title = @event.Title,
                                     Description = @event.Description
-                                });
+                                };
+                db.Lists.Add(_list);
                 db.SaveChanges();
+                _identityMapper.Map<ToDoList>(_list.Id  , @event.ToDoListId);                
             }
         }
 
@@ -35,7 +44,8 @@ namespace Todo.QueryStack.Logic.EventHandlers
         {
             using (var db = new ToDoContext())
             {
-                ToDoList list = db.Lists.First(t => t.Id.Equals(@event.ToDoListId));
+                int modelId = _identityMapper.GetModelId<ToDoList>(@event.ToDoListId);
+                ToDoList list = db.Lists.First(t => t.Id.Equals(modelId));
                 if (list != null)
                 {
                     list.Description = @event.Description;
@@ -49,21 +59,25 @@ namespace Todo.QueryStack.Logic.EventHandlers
         {
             using (var db = new ToDoContext())
             {
-                ToDoList list = db.Lists.First(t => t.Id.Equals(@event.ToDoListId));
+                int listId = _identityMapper.GetModelId<ToDoList>(@event.ToDoListId);
+                ToDoList list = db.Lists.First(t => t.Id.Equals(listId));
                 if (list != null)
                 {
-                    list.Items.Add(new Model.ToDoItem()
+                    var _item = new Model.ToDoItem()
                     {
-                        ToDoListId = @event.ToDoListId,
-                        Id = @event.ToDoItemId,
+                        //Id = @event.ToDoItemId,
+                        ToDoListId = listId,
                         Description = @event.Description,
                         CreationDate = @event.CreationDate,
                         DueDate = @event.DueDate,
                         Importance = @event.Importance,
                         ClosingDate = null,
                         UserId = 0
-                    });
+                    };
+                    list.Items.Add(_item);
                     db.SaveChanges();
+                    _identityMapper.Map<ToDoItem>(_item.Id, @event.ToDoItemId);                
+
                 }
             }
         }
@@ -72,7 +86,8 @@ namespace Todo.QueryStack.Logic.EventHandlers
         {
             using (var db = new ToDoContext())
             {
-                ToDoItem item = db.Items.First(t => t.Id.Equals(@event.Id));
+                int itemId = _identityMapper.GetModelId<ToDoItem>(@event.Id);
+                ToDoItem item = db.Items.First(t => t.Id.Equals(itemId));
                 if (item != null)
                 {
                     item.ClosingDate = @event.ClosingDate;
@@ -86,7 +101,8 @@ namespace Todo.QueryStack.Logic.EventHandlers
         {
             using (var db = new ToDoContext())
             {
-                ToDoItem item = db.Items.First(t => t.Id.Equals(@event.Id));
+                int itemId = _identityMapper.GetModelId<ToDoItem>(@event.Id);
+                ToDoItem item = db.Items.First(t => t.Id.Equals(itemId));
                 if (item != null)
                 {
                     item.ClosingDate = null;
@@ -100,7 +116,8 @@ namespace Todo.QueryStack.Logic.EventHandlers
         {
             using (var db = new ToDoContext())
             {
-                ToDoItem item = db.Items.First(t => t.Id.Equals(@event.Id));
+                int itemId = _identityMapper.GetModelId<ToDoItem>(@event.Id);
+                ToDoItem item = db.Items.First(t => t.Id.Equals(itemId));
                 if (item != null)
                 {
                     item.Importance = @event.Importance;
@@ -114,7 +131,8 @@ namespace Todo.QueryStack.Logic.EventHandlers
         {
             using (var db = new ToDoContext())
             {
-                ToDoItem item = db.Items.First(t => t.Id.Equals(@event.Id));
+                int itemId = _identityMapper.GetModelId<ToDoItem>(@event.Id);
+                ToDoItem item = db.Items.First(t => t.Id.Equals(itemId));
                 if (item != null)
                 {
                     item.Description = @event.Description;
@@ -128,7 +146,8 @@ namespace Todo.QueryStack.Logic.EventHandlers
         {
             using (var db = new ToDoContext())
             {
-                ToDoItem item = db.Items.First(t => t.Id.Equals(@event.Id));
+                int itemId = _identityMapper.GetModelId<ToDoItem>(@event.Id);
+                ToDoItem item = db.Items.First(t => t.Id.Equals(itemId));
                 if (item != null)
                 {
                     item.DueDate = @event.DueDate;

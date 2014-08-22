@@ -34,37 +34,46 @@ namespace Web.UI.Worker
 
         public void ChangeToDoListDescription(ChangeTodoListDescriptionCommandModel model)
         {
-            bus.Send<ChangeToDoListDescriptionCommand>(new ChangeToDoListDescriptionCommand(model.Id, model.Description));
+            string todoListId = database.IdMaps.GetAggregateId<ToDoList>(int.Parse(model.Id)).ToString();
+            bus.Send<ChangeToDoListDescriptionCommand>(new ChangeToDoListDescriptionCommand(todoListId, model.Description));
         }
 
         public void AddNewToDoItem(AddNewToDoItemCommandModel model)
         {
-            bus.Send<AddNewToDoItemCommand>(new AddNewToDoItemCommand(model.ToDoListId, model.Id, model.CreationDate, model.Description, model.DueDate, model.Importance));
+            string todoListId = database.IdMaps.GetAggregateId<ToDoList>(int.Parse(model.ToDoListId)).ToString();
+            bus.Send<AddNewToDoItemCommand>(new AddNewToDoItemCommand(todoListId, model.Id, model.CreationDate, model.Description, model.DueDate, model.Importance));
+            string _newId = database.IdMaps.GetModelId<ToDoItem>(new Guid(model.Id)).ToString();
+            model.Id = _newId;
         }
 
         public void MarkToDoItemAsComplete(MarkToDoItemAsCompleteModel model)
         {
-            bus.Send<MarkToDoItemAsCompleteCommand>(new MarkToDoItemAsCompleteCommand(model.Id,model.ClosingDate));
+            string todoItemId = database.IdMaps.GetAggregateId<ToDoItem>(int.Parse(model.Id)).ToString();
+            bus.Send<MarkToDoItemAsCompleteCommand>(new MarkToDoItemAsCompleteCommand(todoItemId, model.ClosingDate));
         }
 
         public void ReOpenToDoItem(ReOpenToDoItemModel model)
         {
-            bus.Send<ReOpenToDoItemCommand>(new ReOpenToDoItemCommand(model.Id));
+            string todoItemId = database.IdMaps.GetAggregateId<ToDoItem>(int.Parse(model.Id)).ToString();
+            bus.Send<ReOpenToDoItemCommand>(new ReOpenToDoItemCommand(todoItemId));
         }
 
         public void ChangeImportance(ChangeToDoItemImportanceModel model)
         {
-            bus.Send<ChangeToDoItemImportanceCommand>(new ChangeToDoItemImportanceCommand(model.Id, model.Importance));
+            string todoItemId = database.IdMaps.GetAggregateId<ToDoItem>(int.Parse(model.Id)).ToString();
+            bus.Send<ChangeToDoItemImportanceCommand>(new ChangeToDoItemImportanceCommand(todoItemId, model.Importance));
         }
 
         public void ChangeDescription(ChangeToDoItemDescriptionModel model)
         {
-            bus.Send<ChangeToDoItemDescriptionCommand>(new ChangeToDoItemDescriptionCommand(model.Id, model.Description));
+            string todoItemId = database.IdMaps.GetAggregateId<ToDoItem>(int.Parse(model.Id)).ToString();
+            bus.Send<ChangeToDoItemDescriptionCommand>(new ChangeToDoItemDescriptionCommand(todoItemId, model.Description));
         }
 
         public void ChangeDueDate(ChangeToDoItemDueDateModel model)
         {
-            bus.Send<ChangeToDoItemDueDateCommand>(new ChangeToDoItemDueDateCommand(model.Id, model.DueDate));
+            string todoItemId = database.IdMaps.GetAggregateId<ToDoItem>(int.Parse(model.Id)).ToString();
+            bus.Send<ChangeToDoItemDueDateCommand>(new ChangeToDoItemDueDateCommand(todoItemId, model.DueDate));
         }
         #endregion
 
@@ -77,12 +86,14 @@ namespace Web.UI.Worker
         public async Task<ToDoList> GetListItems(string Id)
         {
             //Eagger loading of List's items
-            return await database.ToDoLists.Include(l => l.Items).FirstAsync(t => t.Id.Equals(new Guid(Id)));
+            int modelId = int.Parse(Id);
+            return await database.ToDoLists.Include(l => l.Items).FirstAsync(t => t.Id.Equals(modelId));
         }
 
         public async Task<ToDoItem> GetToDoItem(string Id)
         {
-            return await database.ToDoItems.FirstAsync(t => t.Id.Equals(new Guid(Id)));
+            int modelId = int.Parse(Id);
+            return await database.ToDoItems.FirstAsync(t => t.Id.Equals(modelId));
         }
         #endregion
     }

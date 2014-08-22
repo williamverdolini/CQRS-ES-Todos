@@ -5,6 +5,7 @@ using Castle.Windsor;
 using Todo.Infrastructure.Events;
 using Todo.QueryStack;
 using Todo.QueryStack.Logic.EventHandlers;
+using Todo.QueryStack.Logic.Services;
 
 namespace Web.UI.Injection.Installers
 {
@@ -23,6 +24,7 @@ namespace Web.UI.Injection.Installers
 
             // DI Registration for IDatabase (QueryStack)
             container.Register(Component.For<IDatabase>().ImplementedBy<Database>().LifestyleTransient());
+            container.Register(Component.For<IIdentityMapper>().ImplementedBy<IdentityMapper>().LifestyleTransient());
         }
     }
 }

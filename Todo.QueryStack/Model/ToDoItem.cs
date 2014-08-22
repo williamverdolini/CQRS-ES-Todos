@@ -8,9 +8,9 @@ namespace Todo.QueryStack.Model
     public class ToDoItem
     {
         [Key]
-        public Guid Id { get; set; }
+        public int Id { get; set; }
         [Required]
-        public Guid ToDoListId { get; set; }
+        public int ToDoListId { get; set; }
         //[ForeignKey("ToDoListId")]
         //virtual public ToDoList List {get; set;}
         [Required]

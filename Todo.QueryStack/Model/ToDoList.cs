@@ -9,7 +9,7 @@ namespace Todo.QueryStack.Model
     public class ToDoList
     {
         [Key]
-        public Guid Id { get; set; }
+        public int Id { get; set; }
         [Required]
         public string Title { get; set; }
         [Required]

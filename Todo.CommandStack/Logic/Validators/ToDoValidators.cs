@@ -50,7 +50,8 @@ namespace Todo.CommandStack.Logic.Validators
 
         private bool BeUniqueAmongItemsImportance(AddNewToDoItemCommand command, int importance)
         {
-            return !database.ToDoItems.Any(todo => todo.ToDoListId.Equals(command.TodoListId) && todo.Importance.Equals(importance));
+            int todoList = database.IdMaps.GetModelId<Todo.QueryStack.Model.ToDoList>(command.TodoListId);
+            return !database.ToDoItems.Any(todo => todo.ToDoListId.Equals(todoList) && todo.Importance.Equals(importance));
         }
     }
 
@@ -107,10 +108,15 @@ namespace Todo.CommandStack.Logic.Validators
 
         private bool BeUniqueAmongItemsImportance(ChangeToDoItemImportanceCommand command, int importance)
         {
-            return  (from todo in database.ToDoItems
-                       join list in database.ToDoLists on todo.ToDoListId equals list.Id
-                       where todo.Importance == importance
-                       select todo).Count() == 0;
+            int todoid = database.IdMaps.GetModelId<Todo.QueryStack.Model.ToDoItem>(command.Id);
+            return (from todo in database.ToDoItems
+                    join list in database.ToDoLists on todo.ToDoListId equals list.Id
+                    where
+                    todo.Importance == importance &&
+                    list.Id == (from _todo in database.ToDoItems
+                                where _todo.Id == todoid
+                                select _todo.ToDoListId).FirstOrDefault()
+                    select todo).Count() == 0;
         }
     }
 
