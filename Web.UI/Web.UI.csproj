@@ -166,10 +166,12 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\MigrationController.cs" />
     <Compile Include="Controllers\ToDoListController.cs" />
     <Compile Include="Injection\Installers\ControllersInstaller.cs" />
     <Compile Include="Injection\Installers\EventStoreInstaller.cs" />
     <Compile Include="Injection\Installers\CommandStackInstaller.cs" />
+    <Compile Include="Injection\Installers\LegacyMigrationInstaller.cs" />
     <Compile Include="Injection\Installers\QueryStackInstaller.cs" />
     <Compile Include="Injection\WebAPI\WindsorCompositionRoot.cs" />
     <Compile Include="Global.asax.cs">
@@ -619,6 +621,10 @@
     <ProjectReference Include="..\Todo.Domain\Todo.Domain.csproj">
       <Project>{0d49ae16-a7ac-44fe-be02-dab90fac388a}</Project>
       <Name>Todo.Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Todo.Legacy.Migration\Todo.Legacy.Migration.csproj">
+      <Project>{a0582ed1-520c-4cd1-aea9-debaebb406b7}</Project>
+      <Name>Todo.Legacy.Migration</Name>
     </ProjectReference>
     <ProjectReference Include="..\Todo.QueryStack\Todo.QueryStack.csproj">
       <Project>{7e2938a7-bd8b-4f1c-98a2-f4a132802b03}</Project>

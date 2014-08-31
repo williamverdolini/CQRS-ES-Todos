@@ -1,15 +1,16 @@
 ﻿using System.Linq;
+using Todo.QueryStack;
 using Todo.QueryStack.Logic.Services;
 using Todo.QueryStack.Model;
 
-namespace Todo.QueryStack
+namespace Todo.Legacy.Migration.Infrastructure
 {
-    public class Database : IDatabase
+    public class LegacyDatabase: IDatabase
     {
         private ToDoContext Context;
         private readonly IIdentityMapper _identityMapper;
 
-        public Database(IIdentityMapper identityMapper)
+        public LegacyDatabase(IIdentityMapper identityMapper)
         {
             _identityMapper = identityMapper;
             Context = new ToDoContext();
@@ -22,15 +23,7 @@ namespace Todo.QueryStack
 
         public IQueryable<ToDoList> ToDoLists
         {
-            get
-            {
-                return from list in Context.Lists
-                       join map in Context.IdMap on list.Id equals map.ModelId
-                       where map.TypeName.Equals("ToDoList")
-                       orderby list.Id
-                       select list;
-            }
-            //get { return Context.Lists; }
+            get { return Context.Lists; }
         }
 
         public IQueryable<ToDoItem> ToDoItems

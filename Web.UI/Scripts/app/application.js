@@ -120,6 +120,14 @@ angular.module('TodoApp')
             },
             viewItems: function (_list) {
                 $location.path('/items/' + _list.Id)
+            },
+            migrateLegacyData: function () {
+                $http.post(w$settings.apiUrl + 'Migrate')
+                    .success(
+                        function (result, status) {
+                            console.log('Migration successfully created.');
+                            $scope.actions.getTodoList();
+                        });
             }
         }
 

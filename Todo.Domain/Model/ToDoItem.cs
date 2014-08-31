@@ -14,7 +14,7 @@ namespace Todo.Domain.Model
         public DateTime? DueDate { get; private set; }
         public int Importance { get; private set; }
         public DateTime? ClosingDate { get; private set; }
-        public Guid UserId { get; private set; }
+        public int UserId { get; private set; }
 
         //constructor with only id parameter for EventStore
         private ToDoItem(Guid toDoItemId)
@@ -133,9 +133,9 @@ namespace Todo.Domain.Model
         public DateTime? DueDate { get; private set; }
         public int Importance { get; private set; }
         public DateTime? ClosingDate { get; private set; }
-        public Guid UserId { get; private set; }
+        public int UserId { get; private set; }
 
-        public ToDoItemMemento(Guid id, int version, Guid toDoList, string description, DateTime creationDate, DateTime? dueDate, int importance, DateTime? closingDate, Guid userId)
+        public ToDoItemMemento(Guid id, int version, Guid toDoList, string description, DateTime creationDate, DateTime? dueDate, int importance, DateTime? closingDate, int userId)
         {
             Id = id;
             Version = version;

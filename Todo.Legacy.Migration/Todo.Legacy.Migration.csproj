@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{C8E78209-35ED-4DE6-B7DE-B7AD352ABC3F}</ProjectGuid>
+    <ProjectGuid>{A0582ED1-520C-4CD1-AEA9-DEBAEBB406B7}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Todo.Infrastructure</RootNamespace>
-    <AssemblyName>Todo.Infrastructure</AssemblyName>
+    <RootNamespace>Todo.Legacy.Migration</RootNamespace>
+    <AssemblyName>Todo.Legacy.Migration</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -30,14 +30,18 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="FluentValidation">
-      <HintPath>..\packages\FluentValidation.5.4.0.0\lib\Net40\FluentValidation.dll</HintPath>
-    </Reference>
-    <Reference Include="NEventStore, Version=5.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\NEventStore.5.1.0\lib\net40\NEventStore.dll</HintPath>
+      <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer">
+      <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="NEventStore">
+      <HintPath>..\packages\NEventStore.5.0.1.2\lib\net40\NEventStore.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -46,28 +50,31 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Commands\Command.cs" />
-    <Compile Include="Commands\ICommandHandler.cs" />
-    <Compile Include="Commands\ICommandHandlerFactory.cs" />
-    <Compile Include="Commands\ICommandValidatorFactory.cs" />
-    <Compile Include="Commands\SnapshotCreator.cs" />
-    <Compile Include="Contract.cs" />
-    <Compile Include="Domain\IMementoCreator.cs" />
-    <Compile Include="Events\Event.cs" />
-    <Compile Include="Events\EventBus.cs" />
-    <Compile Include="Events\IEventHandler.cs" />
-    <Compile Include="Events\IEventHandlerFactory.cs" />
-    <Compile Include="IBus.cs" />
-    <Compile Include="IHandleMessages.cs" />
-    <Compile Include="IMessage.cs" />
-    <Compile Include="InMemoryBus.cs" />
+    <Compile Include="Infrastructure\LegacyDatabase.cs" />
+    <Compile Include="Logic\ILegacyMigrationManager.cs" />
+    <Compile Include="Logic\LegacySnapshotCreator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Worker\LegacyMigrationWorker.cs" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
+    <None Include="App.config" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Todo.Domain\Todo.Domain.csproj">
+      <Project>{0d49ae16-a7ac-44fe-be02-dab90fac388a}</Project>
+      <Name>Todo.Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Todo.Infrastructure\Todo.Infrastructure.csproj">
+      <Project>{c8e78209-35ed-4de6-b7de-b7ad352abc3f}</Project>
+      <Name>Todo.Infrastructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Todo.QueryStack\Todo.QueryStack.csproj">
+      <Project>{7e2938a7-bd8b-4f1c-98a2-f4a132802b03}</Project>
+      <Name>Todo.QueryStack</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

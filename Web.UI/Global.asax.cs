@@ -23,7 +23,8 @@ namespace Web.UI
                         new CommandStackInstaller(),
                         new QueryStackInstaller(),
                         new EventStoreInstaller(),
-                        new ControllersInstaller()
+                        new ControllersInstaller(),
+                        new LegacyMigrationInstaller()
                         ); 
         }
 
