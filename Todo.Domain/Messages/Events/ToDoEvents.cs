@@ -1,5 +1,6 @@
 ﻿using Todo.Infrastructure.Events;
 using System;
+using Todo.Infrastructure.Events.Versioning;
 
 namespace Todo.Domain.Messages.Events
 {
@@ -32,7 +33,8 @@ namespace Todo.Domain.Messages.Events
 
 
     // ToDoItem Events
-    public class AddedNewToDoItemEvent : Event
+    [VersionedEvent("AddedNewToDoItemEvent", 0)]
+    public class AddedNewToDoItemEvent_V0 : Event
     {
         public Guid ToDoListId { get; private set; }
         public Guid ToDoItemId { get; private set; }
@@ -41,7 +43,7 @@ namespace Todo.Domain.Messages.Events
         public DateTime? DueDate { get; private set; }
         public int Importance { get; private set; }
 
-        public AddedNewToDoItemEvent(Guid toDoListId, Guid toDoItemId, DateTime creationDate, string description, DateTime? dueDate, int importance)
+        public AddedNewToDoItemEvent_V0(Guid toDoListId, Guid toDoItemId, DateTime creationDate, string description, DateTime? dueDate, int importance)
         {
             ToDoListId = toDoListId;
             ToDoItemId = toDoItemId;
@@ -49,6 +51,29 @@ namespace Todo.Domain.Messages.Events
             Description = description;
             DueDate = dueDate;
             Importance = importance;
+        }
+    }
+
+    [VersionedEvent("AddedNewToDoItemEvent", 1)]
+    public class AddedNewToDoItemEvent : Event
+    {
+        public Guid ToDoListId { get; private set; }
+        public Guid ToDoItemId { get; private set; }
+        public DateTime CreationDate { get; private set; }
+        public string Description { get; private set; }
+        public DateTime? DueDate { get; private set; }
+        public int Importance { get; private set; }
+        public string AssignedTo { get; private set; }
+
+        public AddedNewToDoItemEvent(Guid toDoListId, Guid toDoItemId, DateTime creationDate, string description, DateTime? dueDate, int importance, string assignedTo)
+        {
+            ToDoListId = toDoListId;
+            ToDoItemId = toDoItemId;
+            CreationDate = creationDate;
+            Description = description;
+            DueDate = dueDate;
+            Importance = importance;
+            AssignedTo = assignedTo;
         }
     }
 

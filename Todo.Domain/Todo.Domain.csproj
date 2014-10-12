@@ -43,8 +43,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\Constants.cs" />
     <Compile Include="Messages\Commands\ToDoCommands.cs" />
     <Compile Include="Messages\Events\ToDoEvents.cs" />
+    <Compile Include="Messages\Events\ToDoEventsConverters.cs" />
     <Compile Include="Model\ToDoItem.cs" />
     <Compile Include="Model\ToDoList.cs" />
     <Compile Include="Model\User.cs" />

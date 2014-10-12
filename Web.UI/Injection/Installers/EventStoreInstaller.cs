@@ -6,11 +6,16 @@ using CommonDomain.Core;
 using CommonDomain.Persistence;
 using CommonDomain.Persistence.EventStore;
 using NEventStore;
+using NEventStore.Conversion;
 using NEventStore.Dispatcher;
 using NEventStore.Persistence.Sql.SqlDialects;
+using Newtonsoft.Json;
 using System;
 using System.Reflection;
+using System.Runtime.Serialization;
+using Todo.Domain.Messages.Events;
 using Todo.Infrastructure;
+using Todo.Infrastructure.Events.Versioning;
 using Todo.QueryStack.Logic.EventHandlers;
 
 namespace Web.UI.Injection.Installers
@@ -51,6 +56,12 @@ namespace Web.UI.Injection.Installers
         public void Install(IWindsorContainer container, IConfigurationStore store)
         {
             container.Register(Component.For<IBus, IDispatchCommits>().ImplementedBy<InMemoryBus>().LifestyleSingleton());
+            container.Register(
+                Classes
+                .FromAssemblyContaining<ToDoEventsConverters>()
+                .BasedOn(typeof(IUpconvertEvents<,>)) // That implement ICommandHandler Interface
+                .WithService.Base()
+                .LifestyleTransient());
 
             _store =
                     Wireup
@@ -58,11 +69,14 @@ namespace Web.UI.Injection.Installers
                     .LogToOutputWindow()
                     .UsingInMemoryPersistence()
                     .UsingSqlPersistence("EventStore") // Connection string is in web.config
-                    .WithDialect(new MsSqlDialect())
-                    .InitializeStorageEngine()
-                    .UsingJsonSerialization()
+                        .WithDialect(new MsSqlDialect())
+                    //.UsingJsonSerialization()
+                    .UsingNewtonsoftJsonSerialization(new VersionedEventSerializationBinder())
+                    .UsingEventUpconversion()
+                        //.AddConverter<AddedNewToDoItemEvent, AddedNewToDoItemEvent_V1>(new ToDoEventsConverters())
+                        //.WithConvertersFromAssemblyContaining(new Type[]{typeof(ToDoEventsConverters)})
                     .UsingSynchronousDispatchScheduler()
-                    .DispatchTo(container.Resolve<IDispatchCommits>())
+                        .DispatchTo(container.Resolve<IDispatchCommits>())
                     .Build();
 
             container.Register(
@@ -88,4 +102,13 @@ namespace Web.UI.Injection.Installers
 
     }
 
+    public static class WireupExtensions
+    {
+        public static SerializationWireup UsingNewtonsoftJsonSerialization(this PersistenceWireup wireup, SerializationBinder binder, params Type[] knownTypes)
+        {
+            return wireup.UsingCustomSerialization(
+                new NewtonsoftJsonSerializer(binder, new JsonConverter[] { }, knownTypes)
+                    );
+        }
+    }
 }

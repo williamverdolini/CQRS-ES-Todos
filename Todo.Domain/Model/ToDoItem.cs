@@ -1,6 +1,7 @@
 ﻿using CommonDomain;
 using CommonDomain.Core;
 using System;
+using Todo.Domain.Common;
 using Todo.Domain.Messages.Events;
 using Todo.Infrastructure.Domain;
 
@@ -39,7 +40,7 @@ namespace Todo.Domain.Model
         #region Add New ToDoItem 
         public ToDoItem(Guid toDoListId, Guid todoItemId, DateTime creationDate, string description, DateTime? dueDate, int importance)
         {
-            RaiseEvent(new AddedNewToDoItemEvent(toDoListId, todoItemId, creationDate, description, dueDate, importance));
+            RaiseEvent(new AddedNewToDoItemEvent(toDoListId, todoItemId, creationDate, description, dueDate, importance, Constants.DEFAULT_USER));
         }
 
         void Apply(AddedNewToDoItemEvent @event)

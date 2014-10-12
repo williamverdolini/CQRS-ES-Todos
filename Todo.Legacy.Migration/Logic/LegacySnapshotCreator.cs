@@ -49,7 +49,7 @@ namespace Todo.Legacy.Migration.Logic
                     while(!_db.IdMaps.GetModelId<ToDoList>(entityId).Equals(0))
                         entityId = Guid.NewGuid();
 
-                    //// Create Memento from ReadModel
+                    // Create Memento from ReadModel
                     var entity = new Todo.Domain.Model.ToDoListMemento(entityId, 1, list.Title, list.Description);
 
                     // Create a fake External event
