@@ -63,6 +63,14 @@ namespace Web.UI.Injection.Installers
                 .WithService.Base()
                 .LifestyleTransient());
 
+            //#region Work-Around for Event-Upconverion with SynchronousDispatchScheduler
+            //IDictionary<Type, Func<object, object>> _registered = new Dictionary<Type, Func<object, object>>();
+            //var converter = new ToDoEventsConverters();
+            //_registered[typeof (AddedNewToDoItemEvent_V0)] = @event => converter.Convert(@event as AddedNewToDoItemEvent_V0);
+            //// Workaround for Events Up-conversion. InMemoryBus is injected with EventUpconverterPipelineHook instance.
+            ////container.Register(Component.For<EventUpconverterPipelineHook>().Instance(new EventUpconverterPipelineHook(_registered)));
+            //#endregion
+
             _store =
                     Wireup
                     .Init()
@@ -70,20 +78,31 @@ namespace Web.UI.Injection.Installers
                     .UsingInMemoryPersistence()
                     .UsingSqlPersistence("EventStore") // Connection string is in web.config
                         .WithDialect(new MsSqlDialect())
-                    //.UsingJsonSerialization()
-                    .UsingNewtonsoftJsonSerialization(new VersionedEventSerializationBinder())
-                    .UsingEventUpconversion()
-                        //.AddConverter<AddedNewToDoItemEvent, AddedNewToDoItemEvent_V1>(new ToDoEventsConverters())
-                        //.WithConvertersFromAssemblyContaining(new Type[]{typeof(ToDoEventsConverters)})
+                            //.UsingJsonSerialization()
+                            .UsingNewtonsoftJsonSerialization(new VersionedEventSerializationBinder())
+                            //.Compress()
                     .UsingSynchronousDispatchScheduler()
                         .DispatchTo(container.Resolve<IDispatchCommits>())
+                        .Startup(DispatcherSchedulerStartup.Explicit)
+                    //// DOES NOT WORK WITH SynchronousDispatchScheduler
+                    .UsingEventUpconversion()
+                        .WithConvertersFromAssemblyContaining(new Type[] { typeof(ToDoEventsConverters) })
+                    //    .AddConverter<AddedNewToDoItemEvent_V0, AddedNewToDoItemEvent>(new ToDoEventsConverters())
+                    //.HookIntoPipelineUsing(new EventUpconverterPipelineHook(_registered))
+                    //.WithConvertersFromAssemblyContaining(new Type[]{typeof(ToDoEventsConverters)})
                     .Build();
+
+            _store.StartDispatchScheduler();
+
+            //wireup.AddConverter(new ToDoEventsConverters());
+            //_store = wireup.Build();
 
             container.Register(
                 Component.For<IStoreEvents>().Instance(_store),
                 Component.For<IRepository>().ImplementedBy<EventStoreRepository>().LifeStyle.Transient,
                 Component.For<IConstructAggregates>().ImplementedBy<AggregateFactory>().LifeStyle.Transient,
                 Component.For<IDetectConflicts>().ImplementedBy<ConflictDetector>().LifeStyle.Transient);
+
 
             //// Elegant way to write the same Registration as before:
             //container.Register(

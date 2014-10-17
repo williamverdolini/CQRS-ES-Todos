@@ -12,11 +12,6 @@ namespace Todo.Domain.Messages.Events
         IUpconvertEvents<AddedNewToDoItemEvent_V0, AddedNewToDoItemEvent>
         //IUpconvertEvents<AddedNewToDoItemEvent, AddedNewToDoItemEvent_V0>
     {
-        public ToDoEventsConverters()
-        {
-            System.Diagnostics.Debug.WriteLine("Ci sono?");            
-        }
-
         public AddedNewToDoItemEvent Convert(AddedNewToDoItemEvent_V0 sourceEvent)
         {
             var targetEvent = new AddedNewToDoItemEvent(
