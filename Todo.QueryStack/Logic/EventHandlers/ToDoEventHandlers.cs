@@ -11,12 +11,14 @@ namespace Todo.QueryStack.Logic.EventHandlers
     public class ToDoEventHandlers : 
         IEventHandler<CreatedToDoListEvent>, 
         IEventHandler<ChangedToDoListDescriptionEvent>,
+        IEventHandler<ToDoListMementoPropagatedEvent>,
         IEventHandler<AddedNewToDoItemEvent>,
         IEventHandler<MarkedToDoItemAsCompletedEvent>,
         IEventHandler<ReOpenedToDoItemEvent>,
         IEventHandler<ChangedToDoItemImportanceEvent>,
         IEventHandler<ChangedToDoItemDescriptionEvent>,
-        IEventHandler<ChangedToDoItemDueDateEvent>
+        IEventHandler<ChangedToDoItemDueDateEvent>,
+        IEventHandler<ToDoItemMementoPropagatedEvent>
     {
         private readonly IIdentityMapper _identityMapper;
 
@@ -154,6 +156,57 @@ namespace Todo.QueryStack.Logic.EventHandlers
                     db.Entry(item).State = EntityState.Modified;
                     db.SaveChanges();
                 }
+            }
+        }
+
+        public void Handle(ToDoListMementoPropagatedEvent @event)
+        {
+            using (var db = new ToDoContext())
+            {
+                int itemId = _identityMapper.GetModelId<ToDoList>(@event.Memento.Id);
+                if (itemId.Equals(0))
+                {
+                    //ToDoList Not exists
+                    var _list = new Model.ToDoList()
+                    {
+                        Title = @event.Memento.Title,
+                        Description = @event.Memento.Description
+                    };
+                    db.Lists.Add(_list);
+                    db.SaveChanges();
+                    _identityMapper.Map<ToDoList>(_list.Id, @event.Memento.Id);
+                }
+                // otherwise it could be used for maintenance purposes
+
+
+            }
+        }
+
+        public void Handle(ToDoItemMementoPropagatedEvent @event)
+        {
+            using (var db = new ToDoContext())
+            {
+                int itemId = _identityMapper.GetModelId<ToDoItem>(@event.Memento.Id);
+                if (itemId.Equals(0))
+                {
+                    int listId = _identityMapper.GetModelId<ToDoList>(@event.Memento.ToDoListId);
+                    ToDoList list = db.Lists.First(t => t.Id.Equals(listId));
+                    var _item = new Model.ToDoItem()
+                    {
+                        //Id = @event.ToDoItemId,
+                        ToDoListId = listId,
+                        Description = @event.Memento.Description,
+                        CreationDate = @event.Memento.CreationDate,
+                        DueDate = @event.Memento.DueDate,
+                        Importance = @event.Memento.Importance,
+                        ClosingDate = @event.Memento.ClosingDate,
+                        UserId = @event.Memento.UserId
+                    };
+                    list.Items.Add(_item);
+                    db.SaveChanges();
+                    _identityMapper.Map<ToDoItem>(_item.Id, @event.Memento.Id);
+                }
+
             }
         }
     }

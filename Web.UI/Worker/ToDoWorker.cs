@@ -5,6 +5,7 @@ using System.Data.Entity;
 using System.Threading.Tasks;
 using Todo.Domain.Messages.Commands;
 using Todo.Infrastructure;
+using Todo.Infrastructure.Events.Rebuilding;
 using Todo.QueryStack;
 using Todo.QueryStack.Model;
 using Web.UI.Models.TodoList;
@@ -15,14 +16,16 @@ namespace Web.UI.Worker
     {
         private readonly IBus bus;
         private readonly IDatabase database;
+        private readonly IEventsRebuilder rebuilder;
 
-        public ToDoWorker(IBus commandBus, IRepository repo, IDatabase db)
+        public ToDoWorker(IBus commandBus, IRepository repo, IDatabase db, IEventsRebuilder eventsRebuilder)
         {
             Contract.Requires<ArgumentNullException>(commandBus != null, "commandBus");
             Contract.Requires<ArgumentNullException>(db != null, "db");
-
+            Contract.Requires<ArgumentNullException>(eventsRebuilder != null, "eventsRebuilder");
             bus = commandBus;
             database = db;
+            rebuilder = eventsRebuilder;
         }
 
         #region Command Responsibility
@@ -73,6 +76,11 @@ namespace Web.UI.Worker
         {
             string todoItemId = database.IdMaps.GetAggregateId<ToDoItem>(int.Parse(model.Id)).ToString();
             bus.Send<ChangeToDoItemDueDateCommand>(new ChangeToDoItemDueDateCommand(todoItemId, model.DueDate));
+        }
+
+        public void EventsRebuild()
+        {
+            rebuilder.Rebuild();
         }
         #endregion
 

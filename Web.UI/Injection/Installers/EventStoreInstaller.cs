@@ -80,6 +80,8 @@ namespace Web.UI.Injection.Installers
                         .WithDialect(new MsSqlDialect())
                             //.UsingJsonSerialization()
                             .UsingNewtonsoftJsonSerialization(new VersionedEventSerializationBinder())
+                            // Compress Aggregate serialization. Does NOT allow to do a SQL-uncoding of varbinary Payload
+                            // Comment if you need to decode message with CAST([Payload] AS VARCHAR(MAX)) AS [Payload] (on some VIEW)
                             //.Compress()
                     .UsingSynchronousDispatchScheduler()
                         .DispatchTo(container.Resolve<IDispatchCommits>())

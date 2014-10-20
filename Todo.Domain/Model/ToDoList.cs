@@ -14,9 +14,9 @@ namespace Todo.Domain.Model
         public IList<ToDoItem> Items { get; private set; }
 
         //constructor with only id parameter for EventStore
-        private ToDoList(Guid toDoListId)
+        private ToDoList(Guid id)
         {
-            Id = toDoListId;
+            Id = id;
         }
 
         //constructor with IMemento parameter for EventStore Snapshooting
@@ -28,12 +28,12 @@ namespace Todo.Domain.Model
             Description = mementoItem.Description;
         }
 
-        public ToDoList(Guid toDoListId, string title, string description)
+        public ToDoList(Guid id, string title, string description)
         {
-            Id = toDoListId;
+            Id = id;
             Title = title;
             Description = description;
-            CreateToDoList(toDoListId, title, description);
+            CreateToDoList(id, title, description);
         }
 
         #region Create New ToDoList
@@ -85,6 +85,4 @@ namespace Todo.Domain.Model
             Description = description;
         }
     }
-
-
 }

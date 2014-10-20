@@ -1,5 +1,6 @@
 ﻿using NEventStore;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 //using Newtonsoft.Json;
 //using NEventStore.Serialization;
 using System;
@@ -16,17 +17,20 @@ namespace Todo.Infrastructure.Events.Versioning
 {
     public class NewtonsoftJsonSerializer : NEventStore.Serialization.ISerialize
     {
+        ITraceWriter traceWriter;
+
         public NewtonsoftJsonSerializer(SerializationBinder binder = null, IEnumerable<JsonConverter> converters = null, params Type[] knownTypes)
         {
+            traceWriter = new MemoryTraceWriter();
             var settings = new JsonSerializerSettings()
             {
-                //Converters = (converters ?? Enumerable.Empty<JsonConverter>()).Concat(new[] { new GuidConverter() }).ToList(),
+                //Converters = (converters ?? Enumerable.Empty<JsonConverter>()).ToList(),
                 DefaultValueHandling = DefaultValueHandling.Ignore,
-                ConstructorHandling = ConstructorHandling.Default
+                ConstructorHandling = ConstructorHandling.Default,
+                TraceWriter = traceWriter
             };
 
             untypedSerializer = JsonSerializer.Create(settings);
-
             untypedSerializer.TypeNameHandling = TypeNameHandling.Auto;
             untypedSerializer.DefaultValueHandling = DefaultValueHandling.Ignore;
             untypedSerializer.NullValueHandling = NullValueHandling.Ignore;
@@ -95,6 +99,7 @@ namespace Todo.Infrastructure.Events.Versioning
             try
             {
                 result = (T)((object)this.GetSerializer(type).Deserialize(reader, type));
+                System.Diagnostics.Debug.WriteLine(traceWriter);
             }
             finally
             {

@@ -1,10 +1,11 @@
 ﻿using Todo.Infrastructure.Events;
 using System;
 using Todo.Infrastructure.Events.Versioning;
+using Todo.Domain.Model;
 
 namespace Todo.Domain.Messages.Events
 {
-    // ToDoList Events
+    #region ToDoList Events
     public class CreatedToDoListEvent : Event
     {
         public Guid ToDoListId { get; private set; }
@@ -30,9 +31,9 @@ namespace Todo.Domain.Messages.Events
             Description = description;
         }
     }
+    #endregion
 
-
-    // ToDoItem Events
+    #region ToDoItem Events
     [VersionedEvent("AddedNewToDoItemEvent", 0)]
     public class AddedNewToDoItemEvent_V0 : Event
     {
@@ -128,4 +129,28 @@ namespace Todo.Domain.Messages.Events
             DueDate = dueDate;
         }
     }
+    #endregion
+
+    #region Memento Propagation Events
+    public class ToDoListMementoPropagatedEvent : Event
+    {
+        public ToDoListMemento Memento { get; private set; }
+
+        public ToDoListMementoPropagatedEvent(ToDoListMemento memento)
+        {
+            Memento = memento;
+        }
+    }
+
+    public class ToDoItemMementoPropagatedEvent : Event
+    {
+        public ToDoItemMemento Memento { get; private set; }
+
+        public ToDoItemMementoPropagatedEvent(ToDoItemMemento memento)
+        {
+            Memento = memento;
+        }
+    }
+    #endregion
+
 }

@@ -18,9 +18,9 @@ namespace Todo.Domain.Model
         public int UserId { get; private set; }
 
         //constructor with only id parameter for EventStore
-        private ToDoItem(Guid toDoItemId)
+        private ToDoItem(Guid id)
         {
-            Id = toDoItemId;
+            Id = id;
         }
 
         //constructor with IMemento parameter for EventStore Snapshooting
@@ -38,9 +38,9 @@ namespace Todo.Domain.Model
         }
 
         #region Add New ToDoItem 
-        public ToDoItem(Guid toDoListId, Guid todoItemId, DateTime creationDate, string description, DateTime? dueDate, int importance)
+        public ToDoItem(Guid toDoListId, Guid id, DateTime creationDate, string description, DateTime? dueDate, int importance)
         {
-            RaiseEvent(new AddedNewToDoItemEvent(toDoListId, todoItemId, creationDate, description, dueDate, importance, Constants.DEFAULT_USER));
+            RaiseEvent(new AddedNewToDoItemEvent(toDoListId, id, creationDate, description, dueDate, importance, Constants.DEFAULT_USER));
         }
 
         void Apply(AddedNewToDoItemEvent @event)
@@ -136,11 +136,11 @@ namespace Todo.Domain.Model
         public DateTime? ClosingDate { get; private set; }
         public int UserId { get; private set; }
 
-        public ToDoItemMemento(Guid id, int version, Guid toDoList, string description, DateTime creationDate, DateTime? dueDate, int importance, DateTime? closingDate, int userId)
+        public ToDoItemMemento(Guid id, int version, Guid toDoListId, string description, DateTime creationDate, DateTime? dueDate, int importance, DateTime? closingDate, int userId)
         {
             Id = id;
             Version = version;
-            ToDoListId = toDoList;
+            ToDoListId = toDoListId;
             Description = description;
             CreationDate = creationDate;
             DueDate = dueDate;

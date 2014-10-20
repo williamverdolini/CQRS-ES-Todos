@@ -128,6 +128,14 @@ angular.module('TodoApp')
                             console.log('Migration successfully created.');
                             $scope.actions.getTodoList();
                         });
+            },
+            rebuildEvents: function () {
+                $http.post(w$settings.apiUrl + 'Rebuild')
+                    .success(
+                        function (result, status) {
+                            console.log('Events Rebuild successfully created.');
+                            $scope.actions.getTodoList();
+                        });
             }
         }
 

@@ -3,6 +3,7 @@ using Castle.MicroKernel.Registration;
 using Castle.MicroKernel.SubSystems.Configuration;
 using Castle.Windsor;
 using Todo.Infrastructure.Events;
+using Todo.Infrastructure.Events.Rebuilding;
 using Todo.QueryStack;
 using Todo.QueryStack.Logic.EventHandlers;
 using Todo.QueryStack.Logic.Services;
@@ -25,6 +26,9 @@ namespace Web.UI.Injection.Installers
             // DI Registration for IDatabase (QueryStack)
             container.Register(Component.For<IDatabase>().ImplementedBy<Database>().LifestyleTransient());
             container.Register(Component.For<IIdentityMapper>().ImplementedBy<IdentityMapper>().LifestyleTransient());
+
+            // DI Registration for Events Rebuilding
+            container.Register(Component.For<IEventsRebuilder>().ImplementedBy<EventsRebuilder>().LifestyleTransient());
         }
     }
 }

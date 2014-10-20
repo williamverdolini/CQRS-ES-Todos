@@ -66,6 +66,21 @@ namespace Web.UI.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [Route("api/Rebuild")]
+        [HttpPost]
+        public IHttpActionResult Rebuild()
+        {
+            try
+            {
+                Worker.EventsRebuild();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
         #endregion
 
         ///////////////////////
