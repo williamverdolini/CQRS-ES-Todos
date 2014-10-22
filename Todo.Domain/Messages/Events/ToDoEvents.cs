@@ -78,14 +78,29 @@ namespace Todo.Domain.Messages.Events
         }
     }
 
-    public class MarkedToDoItemAsCompletedEvent : Event
+    [VersionedEvent("MarkedToDoItemAsCompletedEvent", 0)]
+    public class MarkedToDoItemAsCompletedEvent_V0 : Event
     {
         public DateTime ClosingDate { get; private set; }
 
-        public MarkedToDoItemAsCompletedEvent(Guid id, DateTime closingDate)
+        public MarkedToDoItemAsCompletedEvent_V0(Guid id, DateTime closingDate)
         {
             Id = id;
             ClosingDate = closingDate;
+        }
+    }
+
+    [VersionedEvent("MarkedToDoItemAsCompletedEvent", 1)]
+    public class MarkedToDoItemAsCompletedEvent : Event
+    {
+        public DateTime ClosingDate { get; private set; }
+        public string AssignedTo { get; private set; }
+
+        public MarkedToDoItemAsCompletedEvent(Guid id, DateTime closingDate, string assignedTo)
+        {
+            Id = id;
+            ClosingDate = closingDate;
+            AssignedTo = assignedTo;
         }
     }
 

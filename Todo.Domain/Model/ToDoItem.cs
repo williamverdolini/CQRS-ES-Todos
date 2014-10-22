@@ -58,7 +58,7 @@ namespace Todo.Domain.Model
         #region Close ToDoItem
         public void Close(DateTime closingDate)
         {
-            RaiseEvent(new MarkedToDoItemAsCompletedEvent(Id, closingDate));
+            RaiseEvent(new MarkedToDoItemAsCompletedEvent(Id, closingDate, "fake-user"));
         }
 
         void Apply(MarkedToDoItemAsCompletedEvent @event)

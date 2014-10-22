@@ -1,16 +1,9 @@
 ﻿using NEventStore.Conversion;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Todo.Domain.Common;
 
 namespace Todo.Domain.Messages.Events
 {
-    public class ToDoEventsConverters : 
-        IUpconvertEvents<AddedNewToDoItemEvent_V0, AddedNewToDoItemEvent>
-        //IUpconvertEvents<AddedNewToDoItemEvent, AddedNewToDoItemEvent_V0>
+    public class ToDoEventsConverters : IUpconvertEvents<AddedNewToDoItemEvent_V0, AddedNewToDoItemEvent>
     {
         public AddedNewToDoItemEvent Convert(AddedNewToDoItemEvent_V0 sourceEvent)
         {
@@ -24,10 +17,18 @@ namespace Todo.Domain.Messages.Events
                 Constants.DEFAULT_USER);
             return targetEvent;
         }
+    }
 
-        //public AddedNewToDoItemEvent_V0 Convert(AddedNewToDoItemEvent sourceEvent)
-        //{
-        //    throw new NotImplementedException();
-        //}
+    public class MarkedToDoItemAsCompletedEventConverter : IUpconvertEvents<MarkedToDoItemAsCompletedEvent_V0, MarkedToDoItemAsCompletedEvent>
+    {
+        public MarkedToDoItemAsCompletedEvent Convert(MarkedToDoItemAsCompletedEvent_V0 sourceEvent)
+        {
+            var targetEvent = new MarkedToDoItemAsCompletedEvent(
+                    sourceEvent.Id,
+                    sourceEvent.ClosingDate,
+                    "fake-user"
+                );
+            return targetEvent;
+        }
     }
 }
