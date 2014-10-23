@@ -12,7 +12,6 @@ namespace Todo.Infrastructure.Events.Versioning
         private VersionedEventAttribute GetVersionInformation(Type type)
         {
             var attr = type.GetCustomAttributes(typeof(VersionedEventAttribute), false).Cast<VersionedEventAttribute>().FirstOrDefault();
-
             return attr;
         }
 
@@ -32,13 +31,6 @@ namespace Todo.Infrastructure.Events.Versioning
             }
         }
 
-        private VersionedEventAttribute GetVersionInformation(string serializedInfo)
-        {
-            var strs = serializedInfo.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
-
-            return new VersionedEventAttribute(strs[0], int.Parse(strs[1]));
-        }
-
         public override Type BindToType(string assemblyName, string typeName)
         {
             if (IsUpversionedEvent(typeName))
@@ -46,12 +38,14 @@ namespace Todo.Infrastructure.Events.Versioning
                 var type = GetImplementation(GetVersionInformation(GetEventVersionedIdentifier(typeName)));
                 return type;
             }
-            //if (typeName.Contains('|'))
-            //{
-            //    var type = GetImplementation(GetVersionInformation(typeName));
-            //    return type;
-            //}
             return base.BindToType(assemblyName, typeName);
+        }
+
+        private VersionedEventAttribute GetVersionInformation(string serializedInfo)
+        {
+            var strs = serializedInfo.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+
+            return new VersionedEventAttribute(strs[0], int.Parse(strs[1]));
         }
 
         private string GetEventVersionedIdentifier(string typeName)
@@ -81,15 +75,6 @@ namespace Todo.Infrastructure.Events.Versioning
 
         private Type GetImplementation(VersionedEventAttribute attribute)
         {
-            //var types = AppDomain.CurrentDomain.GetAssemblies()
-            //    .Where(x => x.IsDynamic == false)
-            //    .SelectMany(x => x.GetExportedTypes()
-            //        .Where(y => y.IsAbstract == false &&
-            //            y.IsInterface == false));
-
-            //var versionedEvents = types
-            //    .Where(x => x.GetCustomAttributes(typeof(VersionedEventAttribute), false).Any());
-
             var versionedEvents = GetVersionedEventTypes();
 
             return versionedEvents.Where(x =>
