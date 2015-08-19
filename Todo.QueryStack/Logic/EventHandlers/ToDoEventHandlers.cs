@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Data.Entity;
 using System.Linq;
+using System.Threading.Tasks;
 using Todo.Domain.Messages.Events;
 using Todo.Infrastructure.Events;
+using Todo.QueryStack.Logic.Hubs;
 using Todo.QueryStack.Logic.Services;
 using Todo.QueryStack.Model;
 
@@ -21,10 +23,12 @@ namespace Todo.QueryStack.Logic.EventHandlers
         IEventHandler<ToDoItemMementoPropagatedEvent>
     {
         private readonly IIdentityMapper _identityMapper;
+        private readonly IEventNotifier notifier;
 
-        public ToDoEventHandlers(IIdentityMapper identityMapper)
+        public ToDoEventHandlers(IIdentityMapper identityMapper, IEventNotifier notifier)
         {
             _identityMapper = identityMapper;
+            this.notifier = notifier;
         }
 
         public void Handle(CreatedToDoListEvent @event)
@@ -38,8 +42,12 @@ namespace Todo.QueryStack.Logic.EventHandlers
                                 };
                 db.Lists.Add(_list);
                 db.SaveChanges();
-                _identityMapper.Map<ToDoList>(_list.Id  , @event.ToDoListId);                
+                _identityMapper.Map<ToDoList>(_list.Id  , @event.ToDoListId);
+
+                Task.Run(() => notifier.CreatedToDoListEventNotify(_list)).ConfigureAwait(false);
             }
+
+
         }
 
         public void Handle(ChangedToDoListDescriptionEvent @event)
@@ -53,6 +61,8 @@ namespace Todo.QueryStack.Logic.EventHandlers
                     list.Description = @event.Description;
                     db.Entry(list).State = EntityState.Modified;
                     db.SaveChanges();
+
+                    Task.Run(() => notifier.ChangedToDoListDescriptionEventNotify(list)).ConfigureAwait(false);
                 }
             }
         }
@@ -78,8 +88,9 @@ namespace Todo.QueryStack.Logic.EventHandlers
                     };
                     list.Items.Add(_item);
                     db.SaveChanges();
-                    _identityMapper.Map<ToDoItem>(_item.Id, @event.ToDoItemId);                
+                    _identityMapper.Map<ToDoItem>(_item.Id, @event.ToDoItemId);
 
+                    Task.Run(() => notifier.AddedNewToDoItemEventNotify(_item)).ConfigureAwait(false);
                 }
             }
         }
@@ -95,6 +106,8 @@ namespace Todo.QueryStack.Logic.EventHandlers
                     item.ClosingDate = @event.ClosingDate;
                     db.Entry(item).State = EntityState.Modified;
                     db.SaveChanges();
+
+                    Task.Run(() => notifier.MarkedToDoItemAsCompletedEventNotify(item)).ConfigureAwait(false);
                 }
             }
         }
@@ -110,6 +123,8 @@ namespace Todo.QueryStack.Logic.EventHandlers
                     item.ClosingDate = null;
                     db.Entry(item).State = EntityState.Modified;
                     db.SaveChanges();
+
+                    Task.Run(() => notifier.ReOpenedToDoItemEventNotify(item)).ConfigureAwait(false);
                 }
             }
         }
@@ -125,6 +140,8 @@ namespace Todo.QueryStack.Logic.EventHandlers
                     item.Importance = @event.Importance;
                     db.Entry(item).State = EntityState.Modified;
                     db.SaveChanges();
+
+                    Task.Run(() => notifier.ChangedToDoItemImportanceEventNotify(item)).ConfigureAwait(false);
                 }
             }
         }
@@ -140,6 +157,8 @@ namespace Todo.QueryStack.Logic.EventHandlers
                     item.Description = @event.Description;
                     db.Entry(item).State = EntityState.Modified;
                     db.SaveChanges();
+
+                    Task.Run(() => notifier.ChangedToDoItemDescriptionEventNotify(item)).ConfigureAwait(false);
                 }
             }
         }
@@ -155,6 +174,8 @@ namespace Todo.QueryStack.Logic.EventHandlers
                     item.DueDate = @event.DueDate;
                     db.Entry(item).State = EntityState.Modified;
                     db.SaveChanges();
+
+                    Task.Run(() => notifier.ChangedToDoItemDueDateEventNotify(item)).ConfigureAwait(false);
                 }
             }
         }

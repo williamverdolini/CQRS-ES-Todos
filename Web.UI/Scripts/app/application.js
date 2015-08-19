@@ -19,7 +19,11 @@
         };
     })
     .constant('w$settings', {
-        apiUrl: '/api/'
+        apiUrl: '/api/',
+        signalR: {
+            NotifierHubName: 'notifierHub',
+            logging:true
+        }
     })
     .factory('w$utils', [function () {
         var _guid = (function () {
@@ -48,6 +52,36 @@
             getFluentValidationMessage: _getFluentValidationMessage
         }
     }])
+    .factory('w$signalR', ['$rootScope', 'w$settings', function ($rootScope, w$settings) {
+        var broadcastEvent = function (eventName) {
+            return function () {
+                console.log("event:" + eventName);
+                console.log(arguments);
+                $rootScope.$broadcast(eventName, arguments.length==1 ? arguments[0] : arguments);
+            }
+        }
+
+        var notifierHubProxy = $.connection[w$settings.signalR.NotifierHubName];
+        // setup of global notification events 
+        notifierHubProxy.client.changedToDoListDescription = broadcastEvent('changedToDoListDescription');
+        notifierHubProxy.client.createdToDoListEvent = broadcastEvent('createdToDoListEvent');
+        notifierHubProxy.client.addedNewToDoItemEvent = broadcastEvent('addedNewToDoItemEvent');
+        notifierHubProxy.client.markedToDoItemAsCompletedEvent = broadcastEvent('markedToDoItemAsCompletedEvent');
+        notifierHubProxy.client.reOpenedToDoItemEvent = broadcastEvent('reOpenedToDoItemEvent');
+        notifierHubProxy.client.changedToDoItemImportanceEvent = broadcastEvent('changedToDoItemImportanceEvent');
+        notifierHubProxy.client.changedToDoItemDescriptionEvent = broadcastEvent('changedToDoItemDescriptionEvent');
+        notifierHubProxy.client.changedToDoItemDueDateEvent = broadcastEvent('changedToDoItemDueDateEvent');
+
+        //estabish the connection to signalR server
+        $.connection.hub.logging = w$settings.signalR.logging;
+
+        return {
+            start: function () { $.connection.hub.start();},
+            //TODO: is it necessary to stop the connection from client-side?
+            stop: function () { $.connection.hub.stop();}
+        }
+    }])
+
 
 angular.module('TodoApp', ['TodoApp.settings', 'ngRoute', 'ui.bootstrap', 'ngSanitize']);
 angular.module('TodoApp')
@@ -55,15 +89,18 @@ angular.module('TodoApp')
         $routeProvider.
             when('/', { controller: 'TodoListController', templateUrl: 'todoList.html' }).
             when('/items/:Id', { controller: 'TodoListItemsController', templateUrl: 'todoItems.html' }).
-            otherwise({ redirectTo: "/" });
+            otherwise({ redirectTo: "/" });        
     })
+    .run(['w$signalR', function (w$signalR) {
+        w$signalR.start();
+    }])
     .controller('TodoListController', ['$scope', '$http', '$location', 'w$settings', 'w$utils', function ($scope, $http, $location, w$settings, w$utils) {
         $scope.local = {
             TodoListForm: null,
             TodoItemForm: null,
             labels: {
-                changeDescription: 'Cambia la descrizione',
-                todoItems: 'Aggiorna i To-Do'
+                changeDescription: 'Change the description',
+                todoItems: 'Update the tasks'
             },
             list: {
                 title: null,
@@ -85,11 +122,6 @@ angular.module('TodoApp')
                 }
 
                 $http.post(w$settings.apiUrl + 'ToDoList/CreateNewList', _input)
-                    .success(
-                        function (result, status) {
-                            //$scope.local.todoList.push(result);
-                            $scope.actions.getTodoList();
-                        })
                     .error(
                         function (data, status, headers, config) {
                             $scope.local.list.errors.message = w$utils.getFluentValidationMessage(data.Message);
@@ -110,13 +142,7 @@ angular.module('TodoApp')
                     description: _list.Description
                 }
 
-                $http.post(w$settings.apiUrl + 'ToDoList/ChangeDescription', _input)
-                    .success(
-                        function (result, status) {
-                            console.log('ok')
-                            //$scope.local.todoList = result;
-                        });
-
+                $http.post(w$settings.apiUrl + 'ToDoList/ChangeDescription', _input);
             },
             viewItems: function (_list) {
                 $location.path('/items/' + _list.Id)
@@ -140,6 +166,21 @@ angular.module('TodoApp')
         }
 
         $scope.actions.getTodoList();
+
+        //events listeners
+        $scope.$on('createdToDoListEvent', function (event, data) {
+            console.log('server notified a createdToDoListEvent');
+            $scope.local.todoList.push({
+                id: data.Id,
+                title: data.Title,
+                description: data.Description
+            })
+        });
+
+        $scope.$on('changedToDoListDescription', function (event, data) {
+            console.log('server notified a changedToDoListDescription');
+        });
+        
     }])
     .controller('TodoListItemsController', ['$scope', '$http', '$location', '$routeParams', 'w$settings', 'w$utils', '$filter', function ($scope, $http, $location, $routeParams, w$settings, w$utils, $filter) {
         $scope.local = {
@@ -170,6 +211,15 @@ angular.module('TodoApp')
         var getUniversalDate = function (_date) {
             return new Date(_date.getTime() - (_date.getTimezoneOffset() * 60 * 1000));
         }
+        var mapTodoItem = function (element) {
+            var item = element;
+            item.Status = item.ClosingDate ? 'Closed' : 'Open';
+            item.formatDueDate = item.DueDate != null ? new Date(item.DueDate) : null;
+            item._Importance = item.Importance;
+            item._Description = item.Description;
+            item._formatDueDate = item.formatDueDate;
+            return item;
+        }
 
         $scope.actions = {
             loadList: function () {
@@ -180,13 +230,7 @@ angular.module('TodoApp')
                                 $scope.local.item.listTitle = result.Title;
                                 $scope.local.item.listDescription = result.Description;
                                 angular.forEach(result.Items, function (element, index) {
-                                    var item = element;
-                                    item.Status = item.ClosingDate ? 'Closed' : 'Open';
-                                    item.formatDueDate = item.DueDate != null ? new Date(item.DueDate) : null;
-                                    item._Importance = item.Importance;
-                                    item._Description = item.Description;
-                                    item._formatDueDate = item.formatDueDate;
-                                    this.push(item);
+                                    this.push(mapTodoItem(element));
                                 }, $scope.local.todoItems);
                             });
             },
@@ -212,7 +256,6 @@ angular.module('TodoApp')
                 $http.post(w$settings.apiUrl + 'TodoList/Items/' + $scope.local.item.listId + '/Add', _input)
                     .success(
                         function (result, status, headers) {
-                            $scope.actions.loadList();
                             $scope.local.item.description = null;
                             $scope.local.item.importance = null;
                             $scope.local.item.dueDate = null;
@@ -315,4 +358,15 @@ angular.module('TodoApp')
         }
         $scope.actions.loadList();
 
+        //events listeners
+        $scope.$on('addedNewToDoItemEvent', function (event, data) {
+            console.log('server notified a addedNewToDoItemEvent');
+            $scope.local.todoItems.push(mapTodoItem(data));
+        });
+        $scope.$on('markedToDoItemAsCompletedEvent', function (event, data) {
+            console.log('server notified a markedToDoItemAsCompletedEvent');
+        });
+        // and so on. 
+        // Actually also the using of success callback to update the item is a good solution.
+        // It deceives the user, but it's fine for features in which error is unlikely.
     }]);

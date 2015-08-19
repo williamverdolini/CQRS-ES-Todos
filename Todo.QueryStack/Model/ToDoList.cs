@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Newtonsoft.Json;
 
 namespace Todo.QueryStack.Model
 {
@@ -22,4 +22,13 @@ namespace Todo.QueryStack.Model
             //Items = new List<ToDoItem>();
         //}
     }
+
+    public class NotifiedToDoList
+    {
+        public int Id { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public ICollection<ToDoItem> Items { get; private set; }
+    }
+
 }

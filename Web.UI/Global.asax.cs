@@ -18,14 +18,7 @@ namespace Web.UI
 
         public WebApiApplication()
         {
-            this.container = new WindsorContainer()
-                .Install(
-                        new CommandStackInstaller(),
-                        new QueryStackInstaller(),
-                        new EventStoreInstaller(),
-                        new ControllersInstaller(),
-                        new LegacyMigrationInstaller()
-                        ); 
+            this.container = new WindsorContainer();                
         }
 
         public override void Dispose()
@@ -43,6 +36,17 @@ namespace Web.UI
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+            // Configure all AutoMapper Profiles
+            AutoMapperConfig.Configure();
+            // Install DI mapper
+            this.container.Install(
+                        new MappersInstaller(),
+                        new CommandStackInstaller(),
+                        new QueryStackInstaller(),
+                        new EventStoreInstaller(),
+                        new ControllersInstaller(),
+                        new LegacyMigrationInstaller()
+                        ); 
 
             GlobalConfiguration.Configuration.Services.Replace(
                 typeof(IHttpControllerActivator),
