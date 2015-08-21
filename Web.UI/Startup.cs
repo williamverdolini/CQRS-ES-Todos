@@ -1,4 +1,7 @@
-﻿using Microsoft.Owin;
+﻿using Castle.Windsor;
+using Microsoft.AspNet.SignalR;
+using Microsoft.Owin;
+using NEventStore;
 using Owin;
 
 [assembly: OwinStartup(typeof(Web.UI.Startup))]
@@ -11,6 +14,20 @@ namespace Web.UI
         {
             // For more information on how to configure your application, visit http://go.microsoft.com/fwlink/?LinkID=316888
             app.MapSignalR();
+
+            // Use of static reference to Di container to pass to SignalR.
+            // I don't like this approach because it forces to expose the DI container as public throughout all 
+            // the application, and it's not what I want to do
+            //app.MapSignalR(new HubConfiguration
+            //{
+            //    //see: http://www.asp.net/signalr/overview/advanced/dependency-injection
+            //    Resolver = new WindsorDependencyResolver(HostingEnvironment.DIContainer)
+            //});
+
+            //// Start NEventStore dispatcher Explicitly after all the initizlizations
+            //var store = HostingEnvironment.DIContainer.Resolve<IStoreEvents>();
+            //store.StartDispatchScheduler();
         }
     }
+
 }

@@ -28,12 +28,9 @@ namespace Web.UI.Injection.Installers
             // DI Registration for IDatabase (QueryStack)
             container.Register(Component.For<IDatabase>().ImplementedBy<Database>().LifestyleTransient());
             container.Register(Component.For<IIdentityMapper>().ImplementedBy<IdentityMapper>().LifestyleTransient());
-            // DI for SignalR Notifier
+            // DI for SignalR Notifier service
             container.Register(Component.For<IEventNotifier>().ImplementedBy<EventNotifier>().LifestyleSingleton()
                 .DependsOn(Dependency.OnValue<IHubConnectionContext<dynamic>>(GlobalHost.ConnectionManager.GetHubContext<NotifierHub>().Clients)));
-
-            //container.Register(Component.For<IEventNotifier>().ImplementedBy<EventNotifier>().LifestyleSingleton());
-            //container.Register(Component.For<IHubConnectionContext<dynamic>>().UsingFactoryMethod(() => GlobalHost.ConnectionManager.GetHubContext<NotifierHub>().Clients).LifestyleSingleton());
 
             // DI Registration for Events Rebuilding
             container.Register(Component.For<IEventsRebuilder>().ImplementedBy<EventsRebuilder>().LifestyleTransient());
