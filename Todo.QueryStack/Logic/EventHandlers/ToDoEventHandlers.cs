@@ -3,6 +3,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using Todo.Domain.Messages.Events;
+using Todo.Infrastructure;
 using Todo.Infrastructure.Events;
 using Todo.QueryStack.Logic.Hubs;
 using Todo.QueryStack.Logic.Services;
@@ -27,6 +28,8 @@ namespace Todo.QueryStack.Logic.EventHandlers
 
         public ToDoEventHandlers(IIdentityMapper identityMapper, IEventNotifier notifier)
         {
+            Contract.Requires<ArgumentNullException>(identityMapper != null, "identityMapper");
+            Contract.Requires<ArgumentNullException>(notifier != null, "notifier");
             _identityMapper = identityMapper;
             this.notifier = notifier;
         }

@@ -81,15 +81,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CheckpointRepository.cs" />
     <Compile Include="Database.cs" />
     <Compile Include="IDatabase.cs" />
     <Compile Include="Logic\EventHandlers\ToDoEventHandlers.cs" />
+    <Compile Include="Logic\EventObserverSubscriptionFactory.cs" />
     <Compile Include="Logic\Hubs\EventNotifier.cs" />
     <Compile Include="Logic\Hubs\IEventNotifier.cs" />
     <Compile Include="Logic\Hubs\NotifierHub.cs" />
+    <Compile Include="Logic\ReadModelCommitObserver.cs" />
     <Compile Include="Logic\Services\IdentityMapper.cs" />
     <Compile Include="Logic\Services\IIdentityMapper.cs" />
     <Compile Include="Mappers\NotifierMapperProfile.cs" />
+    <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Model\Checkpoint.cs" />
     <Compile Include="Model\IdentityMap.cs" />
     <Compile Include="Model\ToDoItem.cs" />
     <Compile Include="Model\ToDoList.cs" />
@@ -117,7 +122,6 @@
     <Content Include="Scripts\jquery.signalR-2.2.0.js" />
     <Content Include="Scripts\jquery.signalR-2.2.0.min.js" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

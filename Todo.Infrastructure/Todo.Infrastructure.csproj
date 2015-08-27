@@ -58,9 +58,11 @@
     <Compile Include="Contract.cs" />
     <Compile Include="Domain\IMementoCreator.cs" />
     <Compile Include="Events\Event.cs" />
-    <Compile Include="Events\EventBus.cs" />
+    <Compile Include="Events\Polling\CommitObserverStarter.cs" />
     <Compile Include="Events\IEventHandler.cs" />
     <Compile Include="Events\IEventHandlerFactory.cs" />
+    <Compile Include="Events\Polling\LowLatencyPollingPipelineHook.cs" />
+    <Compile Include="Events\Polling\ICheckpointRepository.cs" />
     <Compile Include="Events\Rebuilding\EventsRebuilder.cs" />
     <Compile Include="Events\Rebuilding\IEventsRebuilder.cs" />
     <Compile Include="Events\Versioning\NewtonsoftJsonSerializer.cs" />

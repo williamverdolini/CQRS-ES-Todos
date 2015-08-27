@@ -1,8 +1,8 @@
-﻿using Castle.Windsor;
-using Microsoft.AspNet.SignalR;
+﻿using Hangfire;
 using Microsoft.Owin;
-using NEventStore;
 using Owin;
+using Todo.Infrastructure.Events.Polling;
+using Web.UI.Injection.Hangfire;
 
 [assembly: OwinStartup(typeof(Web.UI.Startup))]
 
@@ -24,10 +24,17 @@ namespace Web.UI
             //    Resolver = new WindsorDependencyResolver(HostingEnvironment.DIContainer)
             //});
 
-            //// Start NEventStore dispatcher Explicitly after all the initizlizations
-            //var store = HostingEnvironment.DIContainer.Resolve<IStoreEvents>();
-            //store.StartDispatchScheduler();
+            //Hangfire configuration
+            GlobalConfiguration.Configuration.UseSqlServerStorage("ToDoContext");
+            app.UseHangfireDashboard();
+            app.UseHangfireServer();
+
+            //Fire & forget job
+            JobActivator.Current = new WindsorJobActivator(HostingEnvironment.DIContainer.Kernel);
+            BackgroundJob.Enqueue(() => HostingEnvironment.DIContainer.Resolve<CommitObserverStarter>().Start());
         }
     }
+
+    
 
 }
