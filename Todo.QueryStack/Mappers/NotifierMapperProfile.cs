@@ -7,7 +7,8 @@ namespace Todo.QueryStack.Mappers
     {
         protected override void Configure()
         {
-            CreateMap<ToDoList, NotifiedToDoList>();
+            CreateMap<ToDoList, NotifiedToDoList>()
+                .ForMember(dest => dest.Items, opt => opt.Ignore());
             CreateMap<ToDoItem, NotifiedToDoItem>();
         }
     }
