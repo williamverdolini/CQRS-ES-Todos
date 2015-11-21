@@ -122,6 +122,13 @@ angular.module('TodoApp')
                 }
 
                 $http.post(w$settings.apiUrl + 'ToDoList/CreateNewList', _input)
+                    .success(
+                        function (result, status, headers) {
+                            $scope.local.list.description = null;
+                            $scope.local.list.title = null;
+                            $scope.local.list.errors.show = false;
+                            $scope.local.list.errors.message = null;
+                        })
                     .error(
                         function (data, status, headers, config) {
                             $scope.local.list.errors.message = w$utils.getFluentValidationMessage(data.Message);
@@ -170,11 +177,13 @@ angular.module('TodoApp')
         //events listeners
         $scope.$on('createdToDoListEvent', function (event, data) {
             console.log('server notified a createdToDoListEvent');
-            $scope.local.todoList.push({
-                id: data.Id,
-                title: data.Title,
-                description: data.Description
-            })
+            $scope.$apply(function () {
+                $scope.local.todoList.push({
+                    Id: data.Id,
+                    Title: data.Title,
+                    Description: data.Description
+                })
+            });
         });
 
         $scope.$on('changedToDoListDescription', function (event, data) {
@@ -361,7 +370,9 @@ angular.module('TodoApp')
         //events listeners
         $scope.$on('addedNewToDoItemEvent', function (event, data) {
             console.log('server notified a addedNewToDoItemEvent');
-            $scope.local.todoItems.push(mapTodoItem(data));
+            $scope.$apply(function () {
+                $scope.local.todoItems.push(mapTodoItem(data));
+            });
         });
         $scope.$on('markedToDoItemAsCompletedEvent', function (event, data) {
             console.log('server notified a markedToDoItemAsCompletedEvent');
