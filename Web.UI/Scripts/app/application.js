@@ -188,6 +188,13 @@ angular.module('TodoApp')
 
         $scope.$on('changedToDoListDescription', function (event, data) {
             console.log('server notified a changedToDoListDescription');
+            $scope.$apply(function () {
+                angular.forEach($scope.local.todoList, function (value, key) {
+                    if (value.Id == data.Id) {
+                        $scope.local.todoList[key].Description = data.Description
+                    }
+                })
+            });
         });
         
     }])
@@ -376,7 +383,61 @@ angular.module('TodoApp')
         });
         $scope.$on('markedToDoItemAsCompletedEvent', function (event, data) {
             console.log('server notified a markedToDoItemAsCompletedEvent');
+            $scope.$apply(function () {
+                angular.forEach($scope.local.todoItems, function (value, key) {
+                    if (value.Id == data.Id) {
+                        $scope.local.todoItems[key].ClosingDate = data.ClosingDate;
+                        $scope.local.todoItems[key].Status = 'Closed';
+                    }
+                })
+            });
         });
+        $scope.$on('reOpenedToDoItemEvent', function (event, data) {
+            console.log('server notified a reOpenedToDoItemEvent');
+            $scope.$apply(function () {
+                angular.forEach($scope.local.todoItems, function (value, key) {
+                    if (value.Id == data.Id) {
+                        $scope.local.todoItems[key].ClosingDate = data.ClosingDate;
+                        $scope.local.todoItems[key].Status = 'Open';
+                    }
+                })
+            });
+        });
+        $scope.$on('changedToDoItemImportanceEvent', function (event, data) {
+            console.log('server notified a changedToDoItemImportanceEvent');
+            $scope.$apply(function () {
+                angular.forEach($scope.local.todoItems, function (value, key) {
+                    if (value.Id == data.Id) {
+                        $scope.local.todoItems[key]._Importance = data.Importance;
+                        $scope.local.todoItems[key].Importance = data.Importance;
+                    }
+                })
+            });
+        });
+        $scope.$on('changedToDoItemDescriptionEvent', function (event, data) {
+            console.log('server notified a changedToDoItemDescriptionEvent');
+            $scope.$apply(function () {
+                angular.forEach($scope.local.todoItems, function (value, key) {
+                    if (value.Id == data.Id) {
+                        $scope.local.todoItems[key]._Description = data.Description;
+                        $scope.local.todoItems[key].Description = data.Description;
+                    }
+                })
+            });
+        });
+        $scope.$on('changedToDoItemDueDateEvent', function (event, data) {
+            console.log('server notified a changedToDoItemDueDateEvent');
+            $scope.$apply(function () {
+                angular.forEach($scope.local.todoItems, function (value, key) {
+                    if (value.Id == data.Id) {
+                        $scope.local.todoItems[key].DueDate = data.DueDate;
+                        $scope.local.todoItems[key].formatDueDate = data.DueDate != null ? new Date(data.DueDate) : null;;
+                        $scope.local.todoItems[key]._formatDueDate = $scope.local.todoItems[key].formatDueDate;
+
+                    }
+                })
+            });
+        });               
         // and so on. 
         // Actually also the using of success callback to update the item is a good solution.
         // It deceives the user, but it's fine for features in which error is unlikely.
