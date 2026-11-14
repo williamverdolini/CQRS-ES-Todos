@@ -1,6 +1,14 @@
 # CQRS-ES Todos on .NET 10
 
-This is the modern replacement track. The original .NET Framework solution remains at the repository root while this vertical slice is evaluated.
+This is the maintained application. The former .NET Framework web application and command/query stacks have been retired. `Todo.Legacy.EventExporter` and the projects it needs remain in the root solution for creating legacy import bundles.
+
+## Prerequisites
+
+- Docker Desktop or Docker Engine with Docker Compose v2.
+- Network access to container, NuGet, and npm registries for the first image build or package restore.
+- Ports `4200`, `8080`, and `1433` available on localhost.
+- .NET 10 SDK for backend builds and tests outside Docker.
+- Node.js 24 and npm 11 for frontend builds and tests outside Docker; Docker Compose builds the frontend without requiring a local Node.js installation.
 
 ## Run the UI, API, and SQL Server
 

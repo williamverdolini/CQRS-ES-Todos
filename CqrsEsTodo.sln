@@ -5,15 +5,7 @@ VisualStudioVersion = 12.0.30723.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Todo.Infrastructure", "Todo.Infrastructure\Todo.Infrastructure.csproj", "{C8E78209-35ED-4DE6-B7DE-B7AD352ABC3F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web.UI", "Web.UI\Web.UI.csproj", "{43BA6A3B-FEA3-4EEC-9730-2CB6F2301D5A}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Todo.CommandStack", "Todo.CommandStack\Todo.CommandStack.csproj", "{0A3CBE35-F8A7-4ECC-8B8D-63BFB32F8CA9}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Todo.QueryStack", "Todo.QueryStack\Todo.QueryStack.csproj", "{7E2938A7-BD8B-4F1C-98A2-F4A132802B03}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Todo.Domain", "Todo.Domain\Todo.Domain.csproj", "{0D49AE16-A7AC-44FE-BE02-DAB90FAC388A}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Todo.Legacy.Migration", "Todo.Legacy.Migration\Todo.Legacy.Migration.csproj", "{A0582ED1-520C-4CD1-AEA9-DEBAEBB406B7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Todo.Legacy.EventExporter", "Todo.Legacy.EventExporter\Todo.Legacy.EventExporter.csproj", "{7A75BA10-8A5E-4776-A8AE-2E5A59A2A9BD}"
 EndProject
@@ -27,26 +19,10 @@ Global
 		{C8E78209-35ED-4DE6-B7DE-B7AD352ABC3F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C8E78209-35ED-4DE6-B7DE-B7AD352ABC3F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C8E78209-35ED-4DE6-B7DE-B7AD352ABC3F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{43BA6A3B-FEA3-4EEC-9730-2CB6F2301D5A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{43BA6A3B-FEA3-4EEC-9730-2CB6F2301D5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{43BA6A3B-FEA3-4EEC-9730-2CB6F2301D5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{43BA6A3B-FEA3-4EEC-9730-2CB6F2301D5A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0A3CBE35-F8A7-4ECC-8B8D-63BFB32F8CA9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0A3CBE35-F8A7-4ECC-8B8D-63BFB32F8CA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0A3CBE35-F8A7-4ECC-8B8D-63BFB32F8CA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0A3CBE35-F8A7-4ECC-8B8D-63BFB32F8CA9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7E2938A7-BD8B-4F1C-98A2-F4A132802B03}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7E2938A7-BD8B-4F1C-98A2-F4A132802B03}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7E2938A7-BD8B-4F1C-98A2-F4A132802B03}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7E2938A7-BD8B-4F1C-98A2-F4A132802B03}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0D49AE16-A7AC-44FE-BE02-DAB90FAC388A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0D49AE16-A7AC-44FE-BE02-DAB90FAC388A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0D49AE16-A7AC-44FE-BE02-DAB90FAC388A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0D49AE16-A7AC-44FE-BE02-DAB90FAC388A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A0582ED1-520C-4CD1-AEA9-DEBAEBB406B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A0582ED1-520C-4CD1-AEA9-DEBAEBB406B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A0582ED1-520C-4CD1-AEA9-DEBAEBB406B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A0582ED1-520C-4CD1-AEA9-DEBAEBB406B7}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7A75BA10-8A5E-4776-A8AE-2E5A59A2A9BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7A75BA10-8A5E-4776-A8AE-2E5A59A2A9BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7A75BA10-8A5E-4776-A8AE-2E5A59A2A9BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
