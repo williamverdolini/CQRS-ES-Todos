@@ -27,7 +27,8 @@ namespace Todo.Infrastructure.Events.Versioning
                 //Converters = (converters ?? Enumerable.Empty<JsonConverter>()).ToList(),
                 DefaultValueHandling = DefaultValueHandling.Ignore,
                 ConstructorHandling = ConstructorHandling.Default,
-                TraceWriter = traceWriter
+                TraceWriter = traceWriter,
+                MaxDepth = 128
             };
 
             untypedSerializer = JsonSerializer.Create(settings);

@@ -38,7 +38,8 @@ namespace Todo.Legacy.EventExporter
                     DateFormatHandling = DateFormatHandling.IsoDateFormat,
                     DateTimeZoneHandling = DateTimeZoneHandling.Utc,
                     Formatting = Formatting.Indented,
-                    TypeNameHandling = TypeNameHandling.None
+                    TypeNameHandling = TypeNameHandling.None,
+                    MaxDepth = 128
                 };
                 var json = JsonConvert.SerializeObject(bundle, settings);
                 var directory = Path.GetDirectoryName(outputPath);
