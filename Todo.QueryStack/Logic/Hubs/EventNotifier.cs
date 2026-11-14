@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
-using AutoMapper;
 using Microsoft.AspNet.SignalR.Hubs;
 using Todo.Infrastructure;
+using Todo.QueryStack.Mappers;
 using Todo.QueryStack.Model;
 
 namespace Todo.QueryStack.Logic.Hubs
@@ -10,9 +10,9 @@ namespace Todo.QueryStack.Logic.Hubs
     public class EventNotifier : IEventNotifier
     {
         private readonly IHubConnectionContext<dynamic> clients;
-        private readonly IMappingEngine mapper;
+        private readonly INotifierMapper mapper;
 
-        public EventNotifier(IHubConnectionContext<dynamic> clients, IMappingEngine mapper)
+        public EventNotifier(IHubConnectionContext<dynamic> clients, INotifierMapper mapper)
         {
             Contract.Requires<ArgumentNullException>(clients != null, "clients");
             Contract.Requires<ArgumentNullException>(mapper != null, "mapper");

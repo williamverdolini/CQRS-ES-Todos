@@ -30,9 +30,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AutoMapper">
-      <HintPath>..\packages\AutoMapper.4.0.4\lib\net45\AutoMapper.dll</HintPath>
-    </Reference>
     <Reference Include="EntityFramework">
       <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
@@ -92,7 +89,7 @@
     <Compile Include="Logic\ReadModelCommitObserver.cs" />
     <Compile Include="Logic\Services\IdentityMapper.cs" />
     <Compile Include="Logic\Services\IIdentityMapper.cs" />
-    <Compile Include="Mappers\NotifierMapperProfile.cs" />
+    <Compile Include="Mappers\NotifierMapper.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\Checkpoint.cs" />
     <Compile Include="Model\IdentityMap.cs" />

@@ -9,6 +9,7 @@ using Todo.QueryStack;
 using Todo.QueryStack.Logic.EventHandlers;
 using Todo.QueryStack.Logic.Hubs;
 using Todo.QueryStack.Logic.Services;
+using Todo.QueryStack.Mappers;
 
 namespace Web.UI.Injection.Installers
 {
@@ -28,6 +29,7 @@ namespace Web.UI.Injection.Installers
             // DI Registration for IDatabase (QueryStack)
             container.Register(Component.For<IDatabase>().ImplementedBy<Database>().LifestyleTransient());
             container.Register(Component.For<IIdentityMapper>().ImplementedBy<IdentityMapper>().LifestyleTransient());
+            container.Register(Component.For<INotifierMapper>().ImplementedBy<NotifierMapper>().LifestyleSingleton());
             // DI for SignalR Notifier service
             container.Register(Component.For<IEventNotifier>().ImplementedBy<EventNotifier>().LifestyleSingleton()
                 .DependsOn(Dependency.OnValue<IHubConnectionContext<dynamic>>(GlobalHost.ConnectionManager.GetHubContext<NotifierHub>().Clients)));
