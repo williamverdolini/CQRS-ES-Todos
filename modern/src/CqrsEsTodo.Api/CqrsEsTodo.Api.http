@@ -1,0 +1,76 @@
+@CqrsEsTodo.Api_HostAddress = http://localhost:8080
+@listId = replace-with-list-id
+@itemId = replace-with-item-id
+
+GET {{CqrsEsTodo.Api_HostAddress}}/health/ready
+Accept: application/json
+
+###
+
+POST {{CqrsEsTodo.Api_HostAddress}}/api/lists
+Content-Type: application/json
+
+{
+	"title": "Work",
+	"description": "Things to do"
+}
+
+###
+
+GET {{CqrsEsTodo.Api_HostAddress}}/api/lists/{{listId}}
+Accept: application/json
+
+###
+
+GET {{CqrsEsTodo.Api_HostAddress}}/api/items/{{itemId}}
+Accept: application/json
+
+###
+
+POST {{CqrsEsTodo.Api_HostAddress}}/api/lists/{{listId}}/items
+Content-Type: application/json
+
+{
+	"description": "Review pull request",
+	"importance": 2
+}
+
+###
+
+PUT {{CqrsEsTodo.Api_HostAddress}}/api/lists/{{listId}}/items/{{itemId}}/completion
+Content-Type: application/json
+
+{
+	"completed": true
+}
+
+###
+
+PUT {{CqrsEsTodo.Api_HostAddress}}/api/lists/{{listId}}/items/{{itemId}}/importance
+Content-Type: application/json
+
+{
+	"importance": 5
+}
+
+###
+
+PUT {{CqrsEsTodo.Api_HostAddress}}/api/lists/{{listId}}/items/{{itemId}}/due-date
+Content-Type: application/json
+
+{
+	"dueAt": "2026-12-01T17:00:00Z"
+}
+
+###
+
+PUT {{CqrsEsTodo.Api_HostAddress}}/api/lists/{{listId}}/items/{{itemId}}/description
+Content-Type: application/json
+
+{
+	"description": "Ship reviewed changes"
+}
+
+###
+
+POST {{CqrsEsTodo.Api_HostAddress}}/api/maintenance/rebuild-read-model
