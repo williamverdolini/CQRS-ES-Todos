@@ -2,7 +2,7 @@
 
 This is the modern replacement track. The original .NET Framework solution remains at the repository root while this vertical slice is evaluated.
 
-## Run the API and SQL Server
+## Run the UI, API, and SQL Server
 
 From this directory, start the development stack with:
 
@@ -10,9 +10,11 @@ From this directory, start the development stack with:
 docker compose --env-file .env.example up --build
 ```
 
-The API is available at `http://localhost:8080`. OpenAPI is available at `http://localhost:8080/openapi/v1.json`; `/health/live` and `/health/ready` report process and database health. EF Core applies checked-in migrations in Development and rebuilds the query projection from stored events when a migration is pending.
+Open `http://localhost:4200` for the Angular UI. The Nginx frontend serves the static app and proxies `/api` requests to the API container. The API is also available at `http://localhost:8080`; OpenAPI is available at `http://localhost:8080/openapi/v1.json`, and `/health/live` and `/health/ready` report process and database health. EF Core applies checked-in migrations in Development and rebuilds the query projection from stored events when a migration is pending.
 
 For a local environment, copy `.env.example` to `.env` and replace the development-only SQL Server password. Do not use the example credentials outside a disposable local environment.
+
+The command above works from a clean clone with Docker Compose and a Docker build environment that can reach the package registries. It builds the Angular app in the frontend image, then serves the compiled static files from Nginx. Frontend dependency installation, build, and browser behavior have not been verified locally; run those checks after installing Node.js 24 and npm 11 if you are developing the UI outside Docker.
 
 ## Run tests
 

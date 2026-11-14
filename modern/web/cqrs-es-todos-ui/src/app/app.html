@@ -1,0 +1,58 @@
+<header class="topbar">
+  <a class="brand" href="/" aria-label="Todo, pagina iniziale"><span class="brand-mark">t.</span><span>today<span class="brand-dot">.</span></span></a>
+  <div class="topbar-note"><span class="live-dot"></span> Le tue idee, in ordine</div>
+</header>
+
+<main class="workspace">
+  <aside class="sidebar">
+    <div class="sidebar-heading"><div><span class="eyebrow">SPAZIO PERSONALE</span><h1>Le tue liste</h1></div><span class="count-pill">{{ lists().length }}</span></div>
+    <div class="list-nav" aria-label="Seleziona una lista">
+      @for (list of lists(); track list.id) {
+        <button class="list-link" [class.active]="selectedId() === list.id" (click)="selectedId.set(list.id)">
+          <span class="list-icon">{{ list.title.charAt(0).toUpperCase() }}</span><span class="list-name">{{ list.title }}<small>{{ list.items.length }} {{ list.items.length === 1 ? 'attività' : 'attività' }}</small></span><span class="list-arrow">›</span>
+        </button>
+      } @empty {
+        @if (!loading()) { <div class="empty-sidebar">Nessuna lista per ora.<br>Creane una qui sotto.</div> }
+      }
+    </div>
+    @if (lists().length) {
+      <label class="mobile-list-picker">Lista selezionata
+        <select [ngModel]="selectedId() ?? ''" (ngModelChange)="selectedId.set($event)" aria-label="Seleziona una lista">
+          @for (list of lists(); track list.id) { <option [value]="list.id">{{ list.title }} · {{ list.items.length }} attività</option> }
+        </select>
+      </label>
+    }
+    <form class="new-list" (ngSubmit)="createList()">
+      <span class="eyebrow">NUOVA LISTA</span>
+      <label class="sr-only" for="list-title">Nome della lista</label><input id="list-title" [ngModel]="newTitle()" (ngModelChange)="newTitle.set($event)" name="title" placeholder="Es. Progetti personali" required maxlength="120">
+      <label class="sr-only" for="list-description">Descrizione (facoltativa)</label><input id="list-description" [ngModel]="newListDescription()" (ngModelChange)="newListDescription.set($event)" name="description" placeholder="Una breve descrizione">
+      <button class="text-action" type="submit" [disabled]="saving() || !newTitle().trim()"><span>＋</span> Crea una lista</button>
+    </form>
+    <div class="sidebar-foot"><span>Fatto con calma.</span><span class="foot-sparkle">✳</span></div>
+  </aside>
+
+  <section class="main-panel">
+    @if (error()) { <div class="notice" role="alert"><span>{{ error() }}</span><button type="button" aria-label="Chiudi messaggio" (click)="error.set('')">×</button></div> }
+    @if (loading()) { <div class="loading-state"><span class="spinner"></span> Sto preparando le tue liste…</div> }
+    @else if (selected; as list) {
+      <div class="page-heading"><div><span class="eyebrow">LA TUA LISTA</span><h2>{{ list.title }}<span class="heading-period">.</span></h2><p>{{ list.description || 'Uno spazio per quello che vuoi portare a termine.' }}</p></div><div class="list-stats"><div class="stat"><strong>{{ openCount }}</strong><span>DA FARE</span></div><div class="stat-divider"></div><div class="stat"><strong>{{ doneCount }}</strong><span>COMPLETATE</span></div></div></div>
+      <form class="composer" (ngSubmit)="addItem()"><span class="composer-plus">＋</span><label class="sr-only" for="new-item">Aggiungi un’attività</label><input id="new-item" [ngModel]="newItemDescription()" (ngModelChange)="newItemDescription.set($event)" name="item" placeholder="Aggiungi un’attività…" required maxlength="500"><label class="sr-only" for="new-due">Scadenza</label><input id="new-due" class="composer-date" type="date" [ngModel]="newDueAt()" (ngModelChange)="newDueAt.set($event)" name="due" aria-label="Scadenza"><label class="sr-only" for="new-priority">Priorità</label><select id="new-priority" class="composer-priority" [ngModel]="newImportance()" (ngModelChange)="newImportance.set(+$event)" name="importance" aria-label="Priorità"><option [ngValue]="0">Normale</option><option [ngValue]="1">Importante</option><option [ngValue]="2">Urgente</option></select><button class="add-button" type="submit" [disabled]="saving() || !newItemDescription().trim()">Aggiungi <span>↗</span></button></form>
+      <div class="items-toolbar"><div class="filter-tabs" role="group" aria-label="Filtra le attività"><button type="button" [class.selected]="filter() === 'all'" (click)="filter.set('all')">Tutte <span>{{ list.items.length }}</span></button><button type="button" [class.selected]="filter() === 'open'" (click)="filter.set('open')">Da fare <span>{{ openCount }}</span></button><button type="button" [class.selected]="filter() === 'done'" (click)="filter.set('done')">Completate <span>{{ doneCount }}</span></button></div><span class="sort-note">PRIORITÀ <span>↕</span></span></div>
+      <div class="items-list">
+        @for (item of visibleItems; track item.id) {
+          <article class="task-row" [class.completed]="!!item.completedAt">
+            <button class="check-button" type="button" [attr.aria-label]="item.completedAt ? 'Riapri attività' : 'Completa attività'" [attr.aria-pressed]="!!item.completedAt" (click)="toggle(item)"><span>✓</span></button>
+            <div class="task-content"><label class="sr-only" [for]="'description-' + item.id">Descrizione attività</label><input class="task-description" [id]="'description-' + item.id" [value]="item.description" (blur)="saveDescription(item, $any($event.target).value)" [class.done-text]="!!item.completedAt"><div class="task-meta">@if (item.dueAt) {<span class="due-date" [class.overdue]="isOverdue(item.dueAt, item.completedAt)">◷ {{ formattedDate(item.dueAt) }}</span>}<span class="priority" [class]="'priority priority-' + item.importance">{{ item.importance === 2 ? 'Urgente' : item.importance === 1 ? 'Importante' : 'Normale' }}</span></div></div>
+            <div class="task-controls"><label class="task-control"><span>Priorità</span><select [id]="'priority-' + item.id" [value]="item.importance" (change)="saveImportance(item, $any($event.target).value)"><option value="0">Normale</option><option value="1">Importante</option><option value="2">Urgente</option></select></label><label class="task-control"><span>Scadenza</span><input [id]="'due-' + item.id" type="date" [value]="dateValue(item.dueAt)" (change)="saveDueDate(item, $any($event.target).value)"></label></div>
+          </article>
+        } @empty {
+          <div class="empty-state"><div class="empty-art">✳</div><h3>{{ filter() === 'done' ? 'Ancora nessun traguardo.' : filter() === 'open' ? 'Hai spuntato tutto.' : 'Un foglio tutto tuo.' }}</h3><p>{{ filter() === 'done' ? 'Le attività completate compariranno qui.' : filter() === 'open' ? 'Goditi il momento, oppure aggiungi una nuova attività.' : 'Aggiungi la prima attività e comincia da lì.' }}</p></div>
+        }
+      </div>
+      @if (saving()) { <div class="saving-indicator"><span class="spinner small"></span> Salvataggio…</div> }
+      <footer class="list-footer"><span>{{ openCount === 0 ? 'Tutto fatto per oggi.' : 'Un passo alla volta.' }}</span><span>✳</span></footer>
+    } @else {
+      <div class="empty-state welcome-state"><div class="empty-art">✳</div><span class="eyebrow">BENVENUTO</span><h2>Comincia con una lista<span class="heading-period">.</span></h2><p>Raccogli le idee, scegli una cosa alla volta<br>e trasforma i piani in piccoli progressi.</p></div>
+    }
+  </section>
+</main>

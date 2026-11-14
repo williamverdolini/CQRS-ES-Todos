@@ -29,5 +29,14 @@ services:
       database:
         condition: service_healthy
 
+  web:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    ports:
+      - "127.0.0.1:4200:80"
+    depends_on:
+      - api
+
 volumes:
   sqlserver-data:
