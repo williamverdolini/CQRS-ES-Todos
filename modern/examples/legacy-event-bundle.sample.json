@@ -1,0 +1,45 @@
+{
+  "FormatVersion": 1,
+  "Source": "NEventStore",
+  "ExportedAtUtc": "2026-11-14T12:00:00Z",
+  "Commits": [
+    {
+      "CheckpointToken": "1",
+      "StreamId": "11111111-1111-1111-1111-111111111111",
+      "StreamRevision": 1,
+      "CommitSequence": 1,
+      "CommitStamp": "2026-11-14T10:00:00Z",
+      "Events": [
+        {
+          "Type": "Todo.Domain.Messages.Events.CreatedToDoListEvent",
+          "Payload": {
+            "ToDoListId": "11111111-1111-1111-1111-111111111111",
+            "Title": "Imported list",
+            "Description": "Sample bundle"
+          }
+        }
+      ]
+    },
+    {
+      "CheckpointToken": "2",
+      "StreamId": "22222222-2222-2222-2222-222222222222",
+      "StreamRevision": 1,
+      "CommitSequence": 1,
+      "CommitStamp": "2026-11-14T10:01:00Z",
+      "Events": [
+        {
+          "Type": "Todo.Domain.Messages.Events.AddedNewToDoItemEvent",
+          "Payload": {
+            "ToDoListId": "11111111-1111-1111-1111-111111111111",
+            "ToDoItemId": "22222222-2222-2222-2222-222222222222",
+            "CreationDate": "2026-11-14T10:01:00Z",
+            "Description": "Sample item",
+            "DueDate": null,
+            "Importance": 2,
+            "AssignedTo": "legacy-user"
+          }
+        }
+      ]
+    }
+  ]
+}

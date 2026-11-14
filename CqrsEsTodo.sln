@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Todo.Domain", "Todo.Domain\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Todo.Legacy.Migration", "Todo.Legacy.Migration\Todo.Legacy.Migration.csproj", "{A0582ED1-520C-4CD1-AEA9-DEBAEBB406B7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Todo.Legacy.EventExporter", "Todo.Legacy.EventExporter\Todo.Legacy.EventExporter.csproj", "{7A75BA10-8A5E-4776-A8AE-2E5A59A2A9BD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{A0582ED1-520C-4CD1-AEA9-DEBAEBB406B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A0582ED1-520C-4CD1-AEA9-DEBAEBB406B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A0582ED1-520C-4CD1-AEA9-DEBAEBB406B7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7A75BA10-8A5E-4776-A8AE-2E5A59A2A9BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A75BA10-8A5E-4776-A8AE-2E5A59A2A9BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7A75BA10-8A5E-4776-A8AE-2E5A59A2A9BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A75BA10-8A5E-4776-A8AE-2E5A59A2A9BD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
